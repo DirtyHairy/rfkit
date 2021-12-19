@@ -22,7 +22,12 @@ void setupServer() {
     config_mutex = xSemaphoreCreateMutex();
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
-        request->send_P(200, "text/html", &web_index_html[0], web_index_html_len);
+        AsyncWebServerResponse* response =
+            request->beginResponse_P(200, "text/html", &web_dist_index_html_gz[0], web_dist_index_html_gz_len);
+
+        response->addHeader("Content-Encoding", "gzip");
+
+        request->send(response);
     });
 
     server.on("/config", HTTP_GET, [](AsyncWebServerRequest* request) {

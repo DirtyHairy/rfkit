@@ -5,3 +5,5 @@
 .vscode/ipch
 
 index_html.h
+web/dist
+node_modules
