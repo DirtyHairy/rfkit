@@ -5,6 +5,10 @@
 void Config::load() {
     name = "rfkit device";
     hostname = "rfkit";
+    manufacturer = "manufacturer";
+    serial = "0815";
+    model = "model";
+    revision = "0.0.1";
 }
 
 Config::Config() : switches(1) {
@@ -20,11 +24,23 @@ const char* Config::getName() const { return name.c_str(); }
 
 const char* Config::getHostname() const { return hostname.c_str(); }
 
+const char* Config::getManufacturer() const { return manufacturer.c_str(); }
+
+const char* Config::getSerial() const { return serial.c_str(); }
+
+const char* Config::getModel() const { return model.c_str(); }
+
+const char* Config::getRevision() const { return revision.c_str(); }
+
 String Config::serialize() {
     DynamicJsonDocument doc(JSON_DOC_SIZE);
 
     doc["name"] = name;
     doc["hostname"] = hostname;
+    doc["manufacturer"] = manufacturer;
+    doc["serial"] = serial;
+    doc["model"] = model;
+    doc["revision"] = revision;
 
     JsonArray serializedSwitches = doc.createNestedArray("switches");
     for (const auto& swtch : switches) {
@@ -56,15 +72,16 @@ String Config::serialize() {
 bool Config::deserializeFrom(JsonVariant& data) {
     Config config;
 
-    const char* name = data["name"];
-    const char* hostname = data["hostname"];
+    config.name = data["name"].as<const char*>();
+    config.hostname = data["hostname"].as<const char*>();
+    config.manufacturer = data["manufacturer"].as<const char*>();
+    config.serial = data["serial"].as<const char*>();
+    config.model = data["model"].as<const char*>();
+    config.revision = data["revision"].as<const char*>();
 
-    if (name == nullptr || hostname == nullptr) {
+    if (!(config.name && config.hostname && config.manufacturer && config.serial && config.model && config.revision)) {
         return false;
     }
-
-    config.name = name;
-    config.hostname = hostname;
 
     JsonArray serializedSwitches = data["switches"].as<JsonArray>();
     if (serializedSwitches.isNull()) {
@@ -99,6 +116,10 @@ bool Config::deserializeFrom(JsonVariant& data) {
 Config& Config::operator=(const Config& in) {
     name = in.name;
     hostname = in.hostname;
+    manufacturer = in.manufacturer;
+    serial = in.serial;
+    model = in.model;
+    revision = in.revision;
 
     switches.resize(in.switches.size());
     for (int i = 0; i < switches.size(); i++) {

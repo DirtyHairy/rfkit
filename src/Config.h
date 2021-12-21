@@ -30,6 +30,10 @@ class Config {
 
     const char* getName() const;
     const char* getHostname() const;
+    const char* getManufacturer() const;
+    const char* getSerial() const;
+    const char* getModel() const;
+    const char* getRevision() const;
 
     String serialize();
     bool deserializeFrom(JsonVariant& data);
@@ -37,6 +41,10 @@ class Config {
    private:
     String name;
     String hostname;
+    String manufacturer;
+    String serial;
+    String model;
+    String revision;
     std::vector<Switch> switches;
 };
 

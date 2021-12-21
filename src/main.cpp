@@ -57,6 +57,18 @@ void setupServer() {
         xTimerStart(rebootTimer, 0);
     });
 
+    server.on("/status", HTTP_GET, [](AsyncWebServerRequest* request) {
+        StaticJsonDocument<1024> json;
+
+        json["uptime"] = (int32_t)(esp_timer_get_time() / 1000000);
+        json["heap"] = esp_get_free_heap_size();
+
+        String serializedJson;
+        serializeJson(json, serializedJson);
+
+        request->send(200, "application/json", serializedJson);
+    });
+
     server.onNotFound([](AsyncWebServerRequest* request) { request->send(404, "text/plain", "not found"); });
 
     server.begin();
