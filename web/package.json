@@ -2,7 +2,7 @@
   "name": "rfkit",
   "version": "0.0.1",
   "main": "index.js",
-  "license": "MIT",
+  "license": "LGPL-3.0-or-later",
   "dependencies": {
     "@rollup/plugin-node-resolve": "^13.1.1",
     "preact": "^10.6.4"
