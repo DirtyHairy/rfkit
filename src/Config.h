@@ -8,7 +8,7 @@
 
 class Config {
    public:
-    static constexpr size_t JSON_DOC_SIZE = 32 * 1024;
+    static constexpr size_t JSON_DOC_SIZE = 16 * 1024;
 
    public:
     struct Switch {

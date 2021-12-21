@@ -4,7 +4,7 @@
 #include <FreeRTOS.h>
 #include <HomeSpan.h>
 #include <esp_log.h>
-#include <freertos/semphr.h>
+#include <freertos/timers.h>
 #include <nvs_flash.h>
 
 #include "Config.h"
@@ -14,9 +14,11 @@
 #define NVS_NAMESPACE_CONFIG "CONFIG"
 #define NVS_KEY_CONFIG "CFG"
 
-AsyncWebServer server(8080);
+AsyncWebServer server(80);
 SemaphoreHandle_t config_mutex;
 Config config;
+
+void rebootTimerCallback(TimerHandle_t) { esp_restart(); }
 
 void setupServer() {
     config_mutex = xSemaphoreCreateMutex();
@@ -48,6 +50,13 @@ void setupServer() {
         Config::JSON_DOC_SIZE);
     server.addHandler(configPostHandler);
 
+    server.on("/reboot", HTTP_POST, [](AsyncWebServerRequest* request) {
+        request->send(200);
+
+        TimerHandle_t rebootTimer = xTimerCreate("reboot", pdMS_TO_TICKS(250), pdFALSE, nullptr, rebootTimerCallback);
+        xTimerStart(rebootTimer, 0);
+    });
+
     server.onNotFound([](AsyncWebServerRequest* request) { request->send(404, "text/plain", "not found"); });
 
     server.begin();
@@ -59,6 +68,7 @@ void setup() {
 
     homeSpan.setHostNameSuffix("");
     homeSpan.setWifiCallback(setupServer);
+    homeSpan.setPortNum(8080);
 
     homeSpan.begin(Category::Lighting, config.getName(), config.getHostname());
 }
