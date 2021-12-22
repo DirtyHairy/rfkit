@@ -5,14 +5,10 @@
 #include <HomeSpan.h>
 #include <esp_log.h>
 #include <freertos/timers.h>
-#include <nvs_flash.h>
 
 #include "Config.h"
 #include "Lock.h"
 #include "index_html.h"
-
-#define NVS_NAMESPACE_CONFIG "CONFIG"
-#define NVS_KEY_CONFIG "CFG"
 
 AsyncWebServer server(80);
 SemaphoreHandle_t config_mutex;
@@ -32,14 +28,14 @@ void setupServer() {
         request->send(response);
     });
 
-    server.on("/config", HTTP_GET, [](AsyncWebServerRequest* request) {
+    server.on("/api/config", HTTP_GET, [](AsyncWebServerRequest* request) {
         String serializedConfig = config.serialize();
 
         request->send(200, "application/json", serializedConfig);
     });
 
     AsyncCallbackJsonWebHandler* configPostHandler = new AsyncCallbackJsonWebHandler(
-        "/config",
+        "/api/config",
         [](AsyncWebServerRequest* request, JsonVariant& json) {
             if (config.deserializeFrom(json)) {
                 request->send(200);
@@ -50,14 +46,14 @@ void setupServer() {
         Config::JSON_DOC_SIZE);
     server.addHandler(configPostHandler);
 
-    server.on("/reboot", HTTP_POST, [](AsyncWebServerRequest* request) {
+    server.on("/api/reboot", HTTP_POST, [](AsyncWebServerRequest* request) {
         request->send(200);
 
         TimerHandle_t rebootTimer = xTimerCreate("reboot", pdMS_TO_TICKS(250), pdFALSE, nullptr, rebootTimerCallback);
         xTimerStart(rebootTimer, 0);
     });
 
-    server.on("/status", HTTP_GET, [](AsyncWebServerRequest* request) {
+    server.on("/api/status", HTTP_GET, [](AsyncWebServerRequest* request) {
         StaticJsonDocument<1024> json;
 
         json["uptime"] = (int32_t)(esp_timer_get_time() / 1000000);

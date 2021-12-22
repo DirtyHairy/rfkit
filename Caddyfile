@@ -1,0 +1,7 @@
+http://localhost:8080 {
+    reverse_proxy /api/* http://rfkit
+
+    file_server {
+        root web/dist
+    }
+}
