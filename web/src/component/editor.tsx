@@ -11,10 +11,11 @@ import { StatusDisplay } from './status-display';
 export interface Props {
     config: Config;
     status?: Status;
+    isDirty: boolean;
     dispatch: (action: Action) => void;
 }
 
-export const Editor: FunctionComponent<Props> = ({ config, dispatch, status }) => (
+export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isDirty }) => (
     <>
         <h2>General settings</h2>
 
@@ -70,12 +71,15 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status }) =
 
         <h2 className="headline-switches">Switches</h2>
 
-        {config.switches.map((swch, i) => (
+        {config.switches.map((_, i) => (
             <Switch key={i} config={config} index={i} dispatch={dispatch}></Switch>
         ))}
 
         <div className="editor-buttons">
             <button onClick={() => dispatch({ type: 'addSwitch' })}>Add switch</button>
+            <button className="btn-save" disabled={!isDirty || !validator.config(config)}>
+                Save
+            </button>
         </div>
 
         <StatusDisplay status={status}></StatusDisplay>

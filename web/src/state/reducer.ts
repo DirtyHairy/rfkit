@@ -5,7 +5,7 @@ import { State } from './state';
 export function reducer(state: State, action: Action): State {
     switch (action.type) {
         case 'resetConfig':
-            return { ...state, config: action.config };
+            return { ...state, config: action.config, remoteConfig: JSON.parse(JSON.stringify(action.config)) };
 
         case 'updateStatus':
             return { ...state, status: action.status };

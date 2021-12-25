@@ -7,6 +7,7 @@ export interface Status {
 
 export interface State {
     config?: Config;
+    remoteConfig?: Config;
     status?: Status;
 
     rebooting: boolean;

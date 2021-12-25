@@ -6,6 +6,7 @@ import './scss/app.scss';
 import { Loader } from './loader';
 import { State } from '../state/state';
 import { Action } from '../state/action';
+import { deepEqual } from '../util';
 
 interface StateApi {
     state: State;
@@ -72,6 +73,13 @@ export const App: FunctionComponent = () => {
     } else if (!state.config) {
         return <Loader></Loader>;
     } else {
-        return <Editor config={state.config} dispatch={dispatch} status={state.status} />;
+        return (
+            <Editor
+                config={state.config}
+                dispatch={dispatch}
+                status={state.status}
+                isDirty={!deepEqual(state.config, state.remoteConfig)}
+            />
+        );
     }
 };

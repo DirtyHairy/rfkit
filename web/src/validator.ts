@@ -55,6 +55,9 @@ export const swtch: (index: number) => BoolValidator = (index) => (config) =>
         switchOff(index)(config) !== undefined
     );
 
+export const config: BoolValidator = (cfg) =>
+    !(name(cfg) || hostname(cfg) || cfg.switches.some((_, i) => !swtch(i)(cfg)));
+
 function validateCode(code: string): string | undefined {
     if (code.trim() === '') {
         return MSG_MANDATORY;

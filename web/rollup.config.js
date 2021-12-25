@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import typescript from '@rollup/plugin-typescript';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import scss from 'rollup-plugin-scss';
@@ -14,6 +16,9 @@ function buildHtml() {
 <html lang="en" charset="UTF-8">
     <head>
         <title>Rfkit</title>
+        <meta name="viewport"
+            content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="format-detection" content="telephone=no" />
         <style>
 ${fs.readFileSync('dist/bundle.css').toString('utf8')}
         </style>

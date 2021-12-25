@@ -4,6 +4,12 @@
 
 .editor-buttons {
     margin-top: 2em;
+    position: relative;
+
+    .btn-save {
+        position: absolute;
+        right: 0;
+    }
 }
 
 .status-display {
