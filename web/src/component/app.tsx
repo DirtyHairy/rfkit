@@ -3,6 +3,7 @@ import { useEffect, useReducer } from 'preact/hooks';
 import { Editor } from './editor';
 import { reducer } from '../state/reducer';
 import './scss/app.scss';
+import { Loader } from './loader';
 
 export const App: FunctionComponent = () => {
     const [state, dispatch] = useReducer(reducer, {});
@@ -23,7 +24,7 @@ export const App: FunctionComponent = () => {
     if (state.error) {
         return <div>ERROR: {state.error}</div>;
     } else if (!state.config) {
-        return <div>Loading...</div>;
+        return <Loader></Loader>;
     } else {
         return <Editor config={state.config} dispatch={dispatch} />;
     }

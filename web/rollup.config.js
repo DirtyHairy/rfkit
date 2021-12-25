@@ -11,7 +11,7 @@ function buildHtml() {
             fs.writeFileSync(
                 'dist/index.html',
                 `
-<html>
+<html lang="en" charset="UTF-8">
     <head>
         <title>Rfkit</title>
         <style>

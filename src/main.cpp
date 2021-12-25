@@ -20,8 +20,8 @@ void setupServer() {
     config_mutex = xSemaphoreCreateMutex();
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
-        AsyncWebServerResponse* response =
-            request->beginResponse_P(200, "text/html", &web_dist_index_html_gz[0], web_dist_index_html_gz_len);
+        AsyncWebServerResponse* response = request->beginResponse_P(
+            200, "text/html; charset=utf-8", &web_dist_index_html_gz[0], web_dist_index_html_gz_len);
 
         response->addHeader("Content-Encoding", "gzip");
 
