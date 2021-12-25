@@ -1,4 +1,5 @@
 import { Config, Switch } from './config';
+import { Status } from './state';
 export type ActionType =
     | 'resetConfig'
     | 'updateConfig'
@@ -7,7 +8,8 @@ export type ActionType =
     | 'setError'
     | 'updateSwitch'
     | 'addSwitch'
-    | 'deleteSwitch';
+    | 'deleteSwitch'
+    | 'updateStatus';
 
 interface WithType {
     type: ActionType;
@@ -42,10 +44,16 @@ export interface DeleteSwitchAction extends WithType {
     index: number;
 }
 
+export interface UpdateStatusAction extends WithType {
+    type: 'updateStatus';
+    status: Status;
+}
+
 export type Action =
     | ResetConfigAction
     | UpdateConfigAction
     | SetErrorAction
     | UpdateSwitchAction
     | AddSwitchAction
-    | DeleteSwitchAction;
+    | DeleteSwitchAction
+    | UpdateStatusAction;

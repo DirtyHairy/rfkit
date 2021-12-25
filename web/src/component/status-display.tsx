@@ -1,0 +1,29 @@
+import { FunctionComponent } from 'preact';
+import { Status } from '../state/state';
+import './scss/status-display.scss';
+
+export interface Props {
+    status?: Status;
+}
+
+function formatUptime(uptime: number) {
+    const days = Math.floor(uptime / 3600 / 24);
+    uptime -= days * 3600 * 24;
+
+    const hours = Math.floor(uptime / 3600);
+    uptime -= hours * 3600;
+
+    const minutes = Math.floor(uptime / 60);
+    uptime -= minutes * 60;
+
+    return `${days > 0 ? days + 'd ' : ''}${hours > 0 ? hours + 'h ' : ''}${
+        minutes > 0 ? minutes + 'm ' : ''
+    }${uptime}s`;
+}
+
+export const StatusDisplay: FunctionComponent<Props> = ({ status }) =>
+    status ? (
+        <div className={`status-display`}>
+            uptime: {formatUptime(status.uptime)} | free heap: {status.heap} bytes
+        </div>
+    ) : null;

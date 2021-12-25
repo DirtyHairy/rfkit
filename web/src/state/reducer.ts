@@ -7,6 +7,9 @@ export function reducer(state: State, action: Action): State {
         case 'resetConfig':
             return { ...state, config: action.config };
 
+        case 'updateStatus':
+            return { ...state, status: action.status };
+
         default:
             return { ...state, config: reduceConfig(state.config, action) };
     }

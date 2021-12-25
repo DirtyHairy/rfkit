@@ -5,13 +5,16 @@ import { Input } from './input';
 import * as validator from '../validator';
 import './scss/editor.scss';
 import { Switch } from './switch';
+import { Status } from '../state/state';
+import { StatusDisplay } from './status-display';
 
 export interface Props {
     config: Config;
+    status?: Status;
     dispatch: (action: Action) => void;
 }
 
-export const Editor: FunctionComponent<Props> = ({ config, dispatch }) => (
+export const Editor: FunctionComponent<Props> = ({ config, dispatch, status }) => (
     <>
         <h2>General settings</h2>
 
@@ -74,5 +77,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch }) => (
         <div className="editor-buttons">
             <button onClick={() => dispatch({ type: 'addSwitch' })}>Add switch</button>
         </div>
+
+        <StatusDisplay status={status}></StatusDisplay>
     </>
 );
