@@ -4,18 +4,8 @@
     &:not(:first-of-type) {
         margin-top: 1em;
     }
-}
 
-input {
-    border: 1px solid black;
-    display: block;
-    width: 100%;
-    border-radius: 0.25em;
-    border: 1px solid #ddd;
-    background-color: #eee;
-    padding: 0.5em;
-
-    .invalid & {
+    &.invalid input {
         border-color: red;
     }
 }

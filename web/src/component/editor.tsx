@@ -4,6 +4,7 @@ import { Config } from '../state/config';
 import { Input } from './input';
 import * as validator from '../validator';
 import './scss/editor.scss';
+import { Switch } from './switch';
 
 export interface Props {
     config: Config;
@@ -65,5 +66,9 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch }) => (
         />
 
         <h2 className="headline-switches">Switches</h2>
+
+        {config.switches.map((swch, i) => (
+            <Switch key={i} config={config} index={i} dispatch={dispatch}></Switch>
+        ))}
     </>
 );

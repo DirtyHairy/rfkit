@@ -13,7 +13,7 @@ export const App: FunctionComponent = () => {
         dispatch(
             response.ok
                 ? {
-                      type: 'reset',
+                      type: 'resetConfig',
                       config: await response.json(),
                   }
                 : { type: 'setError', error: 'failed to load config' }

@@ -1,0 +1,71 @@
+.switch {
+    border: 1px solid black;
+    border-radius: 1em;
+    padding: 1em;
+
+    .headline {
+        position: relative;
+    }
+
+    .switch-settings {
+        overflow-y: hidden;
+        max-height: 33em;
+        transition: max-height 250ms;
+    }
+
+
+    .buttons {
+        margin-top: 1.5em;
+        position: relative;
+        transition: margin-top 250ms;
+    }
+
+    button {
+        width: 5em;
+
+        &.expander {
+            color: black;
+            position: absolute;
+            right: 0;
+            display: inline-block;
+            background: none;
+            padding: 0;
+            border: none;
+            width: auto;
+            margin: 0;
+
+            transition: transform 250ms;
+        }
+
+        &.btn-delete {
+            position: absolute;
+            right: 0;
+        }
+
+        &:not(:first-child) {
+            margin-left: 1.5em;
+        }
+    }
+
+    &.collapsed {
+        .expander {
+            transform: rotate(-180deg);
+        }
+
+        .switch-settings {
+            max-height: 0;
+        }
+
+        .buttons {
+            margin-top: 0;
+        }
+    }
+
+    &.invalid {
+        border-color: red;
+
+        .headline {
+            color: red;
+        }
+    }
+}

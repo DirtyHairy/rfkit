@@ -4,7 +4,7 @@ import { State } from './state';
 
 export function reducer(state: State, action: Action): State {
     switch (action.type) {
-        case 'reset':
+        case 'resetConfig':
             return { ...state, config: action.config };
 
         default:
@@ -20,5 +20,11 @@ function reduceConfig(config: Config | undefined, action: Action) {
     switch (action.type) {
         case 'updateConfig':
             return { ...config, ...action.changes };
+
+        case 'updateSwitchAction':
+            return {
+                ...config,
+                switches: config.switches.map((x, i) => (i === action.index ? { ...x, ...action.changes } : x)),
+            };
     }
 }

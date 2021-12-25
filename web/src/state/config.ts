@@ -13,7 +13,7 @@ export interface Switch {
     name: string;
     on: string;
     off: string;
-    pulseLength: number;
-    protocol: number;
-    repeat: number;
+    pulseLength: number | undefined;
+    protocol: number | undefined;
+    repeat: number | undefined;
 }
