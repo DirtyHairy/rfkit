@@ -83,6 +83,13 @@ bool Config::deserializeFrom(JsonVariant& data) {
         return false;
     }
 
+    config.name.trim();
+    config.hostname.trim();
+    config.manufacturer.trim();
+    config.serial.trim();
+    config.model.trim();
+    config.revision.trim();
+
     JsonArray serializedSwitches = data["switches"].as<JsonArray>();
     if (serializedSwitches.isNull()) {
         return false;
@@ -94,17 +101,20 @@ bool Config::deserializeFrom(JsonVariant& data) {
     for (const auto& serializedSwitch : serializedSwitches) {
         Switch swtch;
 
-        if (!serializedSwitch["name"].is<const char*>() || !serializedSwitch["on"].is<const char*>() ||
-            !serializedSwitch["off"].is<const char*>()) {
-            return false;
-        }
-
         swtch.name = serializedSwitch["name"].as<const char*>();
         swtch.codeOn = serializedSwitch["on"].as<const char*>();
         swtch.codeOff = serializedSwitch["off"].as<const char*>();
         swtch.pulseLength = serializedSwitch["pulseLength"].as<uint32_t>();
         swtch.protocol = serializedSwitch["protocol"].as<uint32_t>();
         swtch.repeat = serializedSwitch["repear"].as<uint32_t>();
+
+        if (!(swtch.name && swtch.codeOn && swtch.codeOff)) {
+            return false;
+        }
+
+        swtch.name.trim();
+        swtch.codeOn.trim();
+        swtch.codeOff.trim();
 
         config.switches[iSwitch++] = swtch;
     }

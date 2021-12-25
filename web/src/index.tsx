@@ -1,14 +1,10 @@
-import { Fragment, FunctionComponent, render } from 'preact';
-import { useState } from 'preact/hooks';
+import { render } from 'preact';
+import { App } from './component/app';
+import { Container } from './component/container';
 
-const App: FunctionComponent = () => {
-    const [value, setValue] = useState('abc');
-
-    return (
-        <Fragment>
-            <h1>Hello from RFkit!</h1>
-        </Fragment>
-    );
-};
-
-render(<App></App>, document.getElementById('app-root')!);
+render(
+    <Container>
+        <App />
+    </Container>,
+    document.getElementById('app-root')!
+);

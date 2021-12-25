@@ -4,12 +4,15 @@
   "main": "index.js",
   "license": "LGPL-3.0-or-later",
   "dependencies": {
-    "@rollup/plugin-node-resolve": "^13.1.1",
     "preact": "^10.6.4"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.1.1",
     "@rollup/plugin-typescript": "^8.3.0",
     "rollup": "^2.61.1",
+    "rollup-plugin-scss": "^3.0.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "sass": "^1.45.1",
     "tslib": "^2.3.1",
     "typescript": "^4.5.4"
   },
@@ -18,5 +21,9 @@
     "tabWidth": 4,
     "singleQuote": true,
     "parser": "typescript"
+  },
+  "scripts": {
+    "watch": "DEV=1 rollup -wc",
+    "build": "rollup -c"
   }
 }

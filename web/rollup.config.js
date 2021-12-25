@@ -1,5 +1,7 @@
 import typescript from '@rollup/plugin-typescript';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import scss from 'rollup-plugin-scss';
+import { terser } from 'rollup-plugin-terser';
 import * as fs from 'fs';
 
 function buildHtml() {
@@ -13,7 +15,7 @@ function buildHtml() {
     <head>
         <title>Rfkit</title>
         <style>
-${fs.readFileSync('src/styles.css').toString('utf8')}
+${fs.readFileSync('dist/bundle.css').toString('utf8')}
         </style>
     </head>
     <body>
@@ -34,5 +36,11 @@ export default {
         file: 'dist/bundle.js',
         format: 'iife',
     },
-    plugins: [typescript(), nodeResolve(), buildHtml()],
+    plugins: [
+        scss({ outputStyle: 'compressed' }),
+        typescript(),
+        nodeResolve(),
+        buildHtml(),
+        ...(process.env.DEV ? [] : [terser({ format: { comments: false } })]),
+    ],
 };
