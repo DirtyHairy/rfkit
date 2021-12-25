@@ -61,6 +61,7 @@ body {
 
     --input-border-color: #ddd;
     --input-background-color: #eee;
+    --input-border-color-focus: black;
     --button-border-color: black;
     --button-background-color: #ccc;
     --button-active-background-color: #999;
@@ -100,6 +101,11 @@ input {
     border-color: var(--input-border-color);
     background-color: var(--input-background-color);
     padding: 0.5em;
+
+    &:focus {
+        border-style: dashed;
+        border-color: var(--input-border-color-focus);
+    }
 }
 
 button {
@@ -117,5 +123,9 @@ button {
 
     &:disabled {
         opacity: 0.4;
+    }
+
+    &:focus {
+        border-style: dashed;
     }
 }

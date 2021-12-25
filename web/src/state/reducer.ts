@@ -19,12 +19,18 @@ function reduceConfig(config: Config | undefined, action: Action) {
 
     switch (action.type) {
         case 'updateConfig':
-            return { ...config, ...action.changes };
+            return { ...config, ...action.changes } as Config;
 
-        case 'updateSwitchAction':
+        case 'updateSwitch':
             return {
                 ...config,
                 switches: config.switches.map((x, i) => (i === action.index ? { ...x, ...action.changes } : x)),
-            };
+            } as Config;
+
+        case 'addSwitch':
+            return { ...config, switches: [...config.switches, { name: '', on: '', off: '' }] } as Config;
+
+        case 'deleteSwitch':
+            return { ...config, switches: config.switches.filter((_, i) => i !== action.index) } as Config;
     }
 }

@@ -70,5 +70,9 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch }) => (
         {config.switches.map((swch, i) => (
             <Switch key={i} config={config} index={i} dispatch={dispatch}></Switch>
         ))}
+
+        <div className="editor-buttons">
+            <button onClick={() => dispatch({ type: 'addSwitch' })}>Add switch</button>
+        </div>
     </>
 );

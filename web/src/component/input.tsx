@@ -7,7 +7,8 @@ export interface Props {
     placeholder: string;
     label: string;
     invalid?: string | undefined;
-    number?: boolean;
+    type?: string;
+    noFocus?: boolean;
     onChange?: (value: string) => void;
 }
 
@@ -17,14 +18,14 @@ export const Input: FunctionComponent<Props> = (props: Props) => {
             <span className="label">{props.label}</span>
             <input
                 value={props.value}
-                maxLength={props.number ? undefined : props.maxLength}
-                max={props.number && props.maxLength ? 10 ** props.maxLength - 1 : undefined}
-                min={props.number ? 0 : undefined}
+                maxLength={props.maxLength}
                 onInput={(e) => props.onChange && props.onChange((e.target as HTMLInputElement).value)}
                 placeholder={props.placeholder}
-                spellCheck={false}
+                // eslint-disable-next-line
+                spellCheck={'false' as any}
+                type={props.type}
                 autoComplete="0"
-                type={props.number ? 'number' : undefined}
+                tabIndex={props.noFocus ? -1 : undefined}
             ></input>
             {props.invalid !== undefined && <span className="validation-error">{props.invalid}</span>}
         </label>

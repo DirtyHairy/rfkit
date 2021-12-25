@@ -5,7 +5,9 @@ export type ActionType =
     | 'updateName'
     | 'updateHostname'
     | 'setError'
-    | 'updateSwitchAction';
+    | 'updateSwitch'
+    | 'addSwitch'
+    | 'deleteSwitch';
 
 interface WithType {
     type: ActionType;
@@ -26,9 +28,24 @@ export interface UpdateConfigAction extends WithType {
 }
 
 export interface UpdateSwitchAction extends WithType {
-    type: 'updateSwitchAction';
+    type: 'updateSwitch';
     index: number;
     changes: Partial<Switch>;
 }
 
-export type Action = ResetConfigAction | UpdateConfigAction | SetErrorAction | UpdateSwitchAction;
+export interface AddSwitchAction extends WithType {
+    type: 'addSwitch';
+}
+
+export interface DeleteSwitchAction extends WithType {
+    type: 'deleteSwitch';
+    index: number;
+}
+
+export type Action =
+    | ResetConfigAction
+    | UpdateConfigAction
+    | SetErrorAction
+    | UpdateSwitchAction
+    | AddSwitchAction
+    | DeleteSwitchAction;

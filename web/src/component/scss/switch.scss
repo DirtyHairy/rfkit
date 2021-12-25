@@ -2,6 +2,7 @@
     border: 1px solid black;
     border-radius: 1em;
     padding: 1em;
+    margin-bottom: 1.5em;
 
     .headline {
         position: relative;
@@ -14,7 +15,7 @@
     }
 
 
-    .buttons {
+    .switch-buttons {
         margin-top: 1.5em;
         position: relative;
         transition: margin-top 250ms;
@@ -56,16 +57,16 @@
             max-height: 0;
         }
 
-        .buttons {
+        .switch-buttons {
             margin-top: 0;
         }
-    }
 
-    &.invalid {
-        border-color: red;
+        &.invalid {
+            border-color: red;
 
-        .headline {
-            color: red;
+            .headline {
+                color: red;
+            }
         }
     }
 }
