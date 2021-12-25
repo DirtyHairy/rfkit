@@ -12,17 +12,17 @@ export interface Props {
 
 export const Input: FunctionComponent<Props> = (props: Props) => {
     return (
-        <label class={`rfkit-input ${props.invalid !== undefined ? 'invalid' : 'valid'}`}>
-            <span class="label">{props.label}</span>
+        <label className={`rfkit-input ${props.invalid !== undefined ? 'invalid' : 'valid'}`}>
+            <span className="label">{props.label}</span>
             <input
                 value={props.value}
                 maxLength={props.maxLength}
                 onInput={(e) => props.onChange && props.onChange((e.target as HTMLInputElement).value)}
                 placeholder={props.placeholder}
-                spellcheck={false}
-                autocomplete="0"
+                spellCheck={false}
+                autoComplete="0"
             ></input>
-            {props.invalid !== undefined && <span class="validation-error">{props.invalid}</span>}
+            {props.invalid !== undefined && <span className="validation-error">{props.invalid}</span>}
         </label>
     );
 };

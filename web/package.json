@@ -9,6 +9,10 @@
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.1.1",
     "@rollup/plugin-typescript": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
+    "@typescript-eslint/parser": "^5.8.0",
+    "eslint": "^8.5.0",
+    "eslint-plugin-react": "^7.28.0",
     "rollup": "^2.61.1",
     "rollup-plugin-scss": "^3.0.0",
     "rollup-plugin-terser": "^7.0.2",
@@ -22,8 +26,42 @@
     "singleQuote": true,
     "parser": "typescript"
   },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "ecmaVersion": 13,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "react",
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "@typescript-eslint/no-non-null-assertion": "off"
+    },
+    "settings": {
+      "react": {
+        "version": "17.0"
+      }
+    }
+  },
   "scripts": {
     "watch": "DEV=1 rollup -wc",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "lint": "eslint ./src"
   }
 }

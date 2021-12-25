@@ -12,7 +12,7 @@ export const hostname: Validator = (config) => {
         return MSG_MANDATORY;
     }
 
-    if (!/^[a-z0-9][a-z0-9\-]*$/.test(config.hostname)) {
+    if (!/^[a-z0-9][a-z0-9-]*$/.test(config.hostname)) {
         return MSG_BAD_HOSTNAME;
     }
 

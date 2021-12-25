@@ -6,7 +6,7 @@ export interface Props {
 }
 
 export const Container: FunctionComponent = ({ children }: Props) => (
-    <div class="container">
+    <div className="container">
         <h1>RFKit configuration</h1>
         {children}
     </div>

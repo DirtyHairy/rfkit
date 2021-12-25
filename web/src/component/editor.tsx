@@ -64,6 +64,6 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch }) => (
             onChange={(value) => dispatch({ type: 'updateConfig', changes: { revision: value } })}
         />
 
-        <h2 class="headline-switches">Switches</h2>
+        <h2 className="headline-switches">Switches</h2>
     </>
 );
