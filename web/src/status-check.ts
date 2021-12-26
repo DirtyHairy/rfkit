@@ -11,6 +11,7 @@ export class StatusCheck {
         }
 
         this.running = true;
+        this.timestampAtStart = performance.now();
         this.worker();
     }
 
@@ -27,7 +28,12 @@ export class StatusCheck {
 
     private updateStatus = async (): Promise<void> => {
         try {
-            const response = await fetch('/api/status');
+            const controller = new AbortController();
+            const timeoutHandle = window.setTimeout(() => controller.abort(), 1500);
+
+            const response = await fetch('/api/status', { signal: controller.signal });
+
+            clearTimeout(timeoutHandle);
 
             if (response.ok) {
                 this.api.current.dispatch({ type: ActionType.updateStatus, status: await response.json() });
@@ -46,8 +52,10 @@ export class StatusCheck {
         this.currentRequest = this.updateStatus();
         await this.currentRequest;
 
-        let delay = (Math.floor(performance.now() / 3000) + 1) * 3000 - performance.now();
-        if (delay < 1000) {
+        const timestamp = performance.now() - this.timestampAtStart;
+
+        let delay = (Math.floor(timestamp / 3000) + 1) * 3000 - timestamp;
+        if (delay < 500) {
             delay += 3000;
         }
 
@@ -57,4 +65,5 @@ export class StatusCheck {
     private handle: number | undefined;
     private running = false;
     private currentRequest: Promise<void> = Promise.resolve();
+    private timestampAtStart = 0;
 }

@@ -29,6 +29,14 @@ export async function reboot(api: MutableRef<StateApi>, statusCheck: MutableRef<
         await statusCheck.current.stop();
         api.current.dispatch({ type: ActionType.setUnreachable, unreachable: true });
 
+        const response = await fetch('/api/reboot', {
+            method: 'POST',
+        });
+
+        if (!response.ok) {
+            throw new Error();
+        }
+
         await new Promise((r) => setTimeout(r, 1000));
 
         statusCheck.current.start();
