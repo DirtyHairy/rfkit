@@ -1,16 +1,14 @@
-.loader-backdrop {
+.loader-container {
     width: 100vw;
     height: 100vh;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #777;
-    opacity: 0.6;
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 1000;
+    z-index: 1001;
 
     .loader {
         display: inline-block;
@@ -51,5 +49,9 @@
         100% {
           transform: rotate(360deg);
         }
+    }
+
+    .loader-message {
+        margin-top: 1em;
     }
 }

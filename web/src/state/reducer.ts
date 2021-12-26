@@ -13,6 +13,9 @@ export function reducer(state: State, action: Action): State {
         case ActionType.setUnreachable:
             return { ...state, unreachable: action.unreachable };
 
+        case ActionType.updateAppState:
+            return { ...state, appState: action.appState };
+
         default:
             return { ...state, config: reduceConfig(state.config, action) };
     }

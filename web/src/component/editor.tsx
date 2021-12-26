@@ -14,9 +14,10 @@ export interface Props {
     isDirty: boolean;
     unreachable: boolean;
     dispatch: (action: Action) => void;
+    onSave: () => void;
 }
 
-export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isDirty, unreachable }) => (
+export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isDirty, unreachable, onSave }) => (
     <>
         <h2>General settings</h2>
 
@@ -78,7 +79,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
 
         <div className="editor-buttons">
             <button onClick={() => dispatch({ type: ActionType.addSwitch })}>Add switch</button>
-            <button className="btn-save" disabled={!isDirty || !validator.config}>
+            <button className="btn-save" disabled={!isDirty || !validator.config(config)} onClick={onSave}>
                 Save
             </button>
         </div>

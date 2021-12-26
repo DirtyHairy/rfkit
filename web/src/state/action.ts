@@ -1,17 +1,17 @@
 import { Config, Switch } from './config';
-import { Status } from './state';
+import { AppState, Status } from './state';
 
 export const enum ActionType {
     resetConfig,
     updateConfig,
     updateName,
     updateHostname,
-    setError,
     updateSwitch,
     addSwitch,
     deleteSwitch,
     updateStatus,
     setUnreachable,
+    updateAppState,
 }
 
 interface WithType {
@@ -21,12 +21,6 @@ export interface ResetConfigAction extends WithType {
     type: ActionType.resetConfig;
     config: Config;
 }
-
-export interface SetErrorAction extends WithType {
-    type: ActionType.setError;
-    error: string;
-}
-
 export interface UpdateConfigAction extends WithType {
     type: ActionType.updateConfig;
     changes: Partial<Omit<Config, 'switches'>>;
@@ -57,12 +51,17 @@ export interface SetUnreachableAction extends WithType {
     unreachable: boolean;
 }
 
+export interface UpdateAppStateAction extends WithType {
+    type: ActionType.updateAppState;
+    appState: AppState;
+}
+
 export type Action =
     | ResetConfigAction
     | UpdateConfigAction
-    | SetErrorAction
     | UpdateSwitchAction
     | AddSwitchAction
     | DeleteSwitchAction
     | UpdateStatusAction
-    | SetUnreachableAction;
+    | SetUnreachableAction
+    | UpdateAppStateAction;
