@@ -1,13 +1,16 @@
-import { FunctionComponent } from 'preact';
-import { Action, ActionType } from '../state/action';
-import { Config } from '../state/config';
-import { Input } from './input';
 import './scss/switch.scss';
+
 import * as validator from '../validator';
-import { useState } from 'preact/hooks';
-import { NumberInput } from './number-input';
-import { Loader } from './loader';
+
+import { Action, ActionType } from '../state/action';
+
+import { Config } from '../state/config';
 import { ErrorMsg } from './error';
+import { FunctionComponent } from 'preact';
+import { Input } from './input';
+import { Loader } from './loader';
+import { NumberInput } from './number-input';
+import { useState } from 'preact/hooks';
 
 export interface Props {
     config: Config;

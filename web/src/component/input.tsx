@@ -1,5 +1,6 @@
-import { FunctionComponent } from 'preact';
 import './scss/input.scss';
+
+import { FunctionComponent } from 'preact';
 
 export interface Props {
     value: string;

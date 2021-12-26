@@ -1,5 +1,6 @@
-import { Config } from './config';
 import { Action, ActionType } from './action';
+
+import { Config } from './config';
 import { State } from './state';
 
 export function reducer(state: State, action: Action): State {

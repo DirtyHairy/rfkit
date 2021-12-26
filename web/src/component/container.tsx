@@ -1,5 +1,6 @@
-import { ComponentChildren, FunctionComponent } from 'preact';
 import './scss/container.scss';
+
+import { ComponentChildren, FunctionComponent } from 'preact';
 
 export interface Props {
     children?: ComponentChildren;

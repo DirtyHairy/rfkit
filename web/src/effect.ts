@@ -1,6 +1,6 @@
-import { MutableRef } from 'preact/hooks';
 import { ActionType } from './state/action';
 import { AppState } from './state/state';
+import { MutableRef } from 'preact/hooks';
 import { StateApi } from './state/state-api';
 import { StatusCheck } from './status-check';
 

@@ -1,5 +1,5 @@
-import { Config, Switch } from './config';
 import { AppState, Status } from './state';
+import { Config, Switch } from './config';
 
 export const enum ActionType {
     resetConfig,

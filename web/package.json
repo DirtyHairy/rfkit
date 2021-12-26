@@ -13,6 +13,9 @@
     "@typescript-eslint/parser": "^5.8.0",
     "eslint": "^8.5.0",
     "eslint-plugin-react": "^7.28.0",
+    "import-sort-style-eslint": "^6.0.0",
+    "prettier": "^2.5.1",
+    "prettier-plugin-import-sort": "^0.0.7",
     "rollup": "^2.61.1",
     "rollup-plugin-scss": "^3.0.0",
     "rollup-plugin-terser": "^7.0.2",
@@ -25,6 +28,12 @@
     "tabWidth": 4,
     "singleQuote": true,
     "parser": "typescript"
+  },
+  "importSort": {
+    ".js, .jsx, .ts, .tsx": {
+      "style": "eslint",
+      "parser": "typescript"
+    }
   },
   "eslintConfig": {
     "env": {

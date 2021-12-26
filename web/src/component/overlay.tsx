@@ -1,6 +1,6 @@
-import { FunctionComponent } from 'preact';
-import { AppState, State } from '../state/state';
+import { AppState } from '../state/state';
 import { ErrorMsg } from './error';
+import { FunctionComponent } from 'preact';
 import { Loader } from './loader';
 
 export interface Props {

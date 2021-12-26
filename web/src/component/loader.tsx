@@ -1,7 +1,8 @@
+import './scss/loader.scss';
+
+import { Backdrop } from './backdrop';
 import { FunctionComponent } from 'preact';
 import { useEffect } from 'preact/hooks';
-import { Backdrop } from './backdrop';
-import './scss/loader.scss';
 
 export interface Props {
     message?: string;

@@ -1,16 +1,16 @@
-import { FunctionComponent } from 'preact';
-import { useEffect, useReducer, useRef } from 'preact/hooks';
-import { Editor } from './editor';
-import { reducer } from '../state/reducer';
 import './scss/app.scss';
-import { Loader } from './loader';
-import { deepEqual } from '../util';
+
+import { loadConfig, reboot, saveConfig } from '../effect';
+import { useEffect, useReducer, useRef } from 'preact/hooks';
+
+import { AppState } from '../state/state';
+import { Editor } from './editor';
+import { FunctionComponent } from 'preact';
+import { Overlay } from './overlay';
 import { StateApi } from '../state/state-api';
 import { StatusCheck } from '../status-check';
-import { AppState } from '../state/state';
-import { ErrorMsg } from './error';
-import { loadConfig, reboot, saveConfig } from '../effect';
-import { Overlay } from './overlay';
+import { deepEqual } from '../util';
+import { reducer } from '../state/reducer';
 
 export const App: FunctionComponent = () => {
     const [state, dispatch] = useReducer(reducer, { appState: AppState.loading, unreachable: false });

@@ -1,5 +1,5 @@
-import { MutableRef } from 'preact/hooks';
 import { ActionType } from './state/action';
+import { MutableRef } from 'preact/hooks';
 import { StateApi } from './state/state-api';
 
 export class StatusCheck {

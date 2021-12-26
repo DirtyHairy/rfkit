@@ -1,6 +1,6 @@
-import { render } from 'preact';
 import { App } from './component/app';
 import { Container } from './component/container';
+import { render } from 'preact';
 
 render(
     <Container>

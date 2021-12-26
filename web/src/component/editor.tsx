@@ -1,12 +1,15 @@
-import { FunctionComponent } from 'preact';
-import { Action, ActionType } from '../state/action';
-import { Config } from '../state/config';
-import { Input } from './input';
-import * as validator from '../validator';
 import './scss/editor.scss';
-import { Switch } from './switch';
+
+import * as validator from '../validator';
+
+import { Action, ActionType } from '../state/action';
+
+import { Config } from '../state/config';
+import { FunctionComponent } from 'preact';
+import { Input } from './input';
 import { Status } from '../state/state';
 import { StatusDisplay } from './status-display';
+import { Switch } from './switch';
 
 export interface Props {
     config: Config;
