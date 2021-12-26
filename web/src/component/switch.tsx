@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact';
-import { Action } from '../state/action';
+import { Action, ActionType } from '../state/action';
 import { Config } from '../state/config';
 import { Input } from './input';
 import './scss/switch.scss';
@@ -39,7 +39,9 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                     maxLength={32}
                     invalid={validator.switchName(index)(config)}
                     noFocus={!expanded}
-                    onChange={(value) => dispatch({ type: 'updateSwitch', index: index, changes: { name: value } })}
+                    onChange={(value) =>
+                        dispatch({ type: ActionType.updateSwitch, index: index, changes: { name: value } })
+                    }
                 ></Input>
 
                 <Input
@@ -49,7 +51,9 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                     maxLength={64}
                     invalid={validator.switchOn(index)(config)}
                     noFocus={!expanded}
-                    onChange={(value) => dispatch({ type: 'updateSwitch', index: index, changes: { on: value } })}
+                    onChange={(value) =>
+                        dispatch({ type: ActionType.updateSwitch, index: index, changes: { on: value } })
+                    }
                 ></Input>
 
                 <Input
@@ -59,7 +63,9 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                     maxLength={64}
                     invalid={validator.switchOff(index)(config)}
                     noFocus={!expanded}
-                    onChange={(value) => dispatch({ type: 'updateSwitch', index: index, changes: { off: value } })}
+                    onChange={(value) =>
+                        dispatch({ type: ActionType.updateSwitch, index: index, changes: { off: value } })
+                    }
                 ></Input>
 
                 <NumberInput
@@ -70,7 +76,7 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                     noFocus={!expanded}
                     onChange={(value) =>
                         dispatch({
-                            type: 'updateSwitch',
+                            type: ActionType.updateSwitch,
                             index: index,
                             changes: {
                                 pulseLength: value,
@@ -87,7 +93,7 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                     noFocus={!expanded}
                     onChange={(value) =>
                         dispatch({
-                            type: 'updateSwitch',
+                            type: ActionType.updateSwitch,
                             index: index,
                             changes: {
                                 protocol: value,
@@ -104,7 +110,7 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                     noFocus={!expanded}
                     onChange={(value) =>
                         dispatch({
-                            type: 'updateSwitch',
+                            type: ActionType.updateSwitch,
                             index: index,
                             changes: {
                                 repeat: value,
@@ -121,7 +127,7 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                 <button className="btn-off" disabled={!!validator.switchOff(index)(config)}>
                     Off
                 </button>
-                <button className="btn-delete" onClick={() => dispatch({ type: 'deleteSwitch', index })}>
+                <button className="btn-delete" onClick={() => dispatch({ type: ActionType.deleteSwitch, index })}>
                     Delete
                 </button>
             </div>

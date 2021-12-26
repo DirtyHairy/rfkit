@@ -1,52 +1,60 @@
 import { Config, Switch } from './config';
 import { Status } from './state';
-export type ActionType =
-    | 'resetConfig'
-    | 'updateConfig'
-    | 'updateName'
-    | 'updateHostname'
-    | 'setError'
-    | 'updateSwitch'
-    | 'addSwitch'
-    | 'deleteSwitch'
-    | 'updateStatus';
+
+export const enum ActionType {
+    resetConfig,
+    updateConfig,
+    updateName,
+    updateHostname,
+    setError,
+    updateSwitch,
+    addSwitch,
+    deleteSwitch,
+    updateStatus,
+    setUnreachable,
+}
 
 interface WithType {
     type: ActionType;
 }
 export interface ResetConfigAction extends WithType {
-    type: 'resetConfig';
+    type: ActionType.resetConfig;
     config: Config;
 }
 
 export interface SetErrorAction extends WithType {
-    type: 'setError';
+    type: ActionType.setError;
     error: string;
 }
 
 export interface UpdateConfigAction extends WithType {
-    type: 'updateConfig';
+    type: ActionType.updateConfig;
     changes: Partial<Omit<Config, 'switches'>>;
 }
 
 export interface UpdateSwitchAction extends WithType {
-    type: 'updateSwitch';
+    type: ActionType.updateSwitch;
     index: number;
     changes: Partial<Switch>;
 }
 
 export interface AddSwitchAction extends WithType {
-    type: 'addSwitch';
+    type: ActionType.addSwitch;
 }
 
 export interface DeleteSwitchAction extends WithType {
-    type: 'deleteSwitch';
+    type: ActionType.deleteSwitch;
     index: number;
 }
 
 export interface UpdateStatusAction extends WithType {
-    type: 'updateStatus';
+    type: ActionType.updateStatus;
     status: Status;
+}
+
+export interface SetUnreachableAction extends WithType {
+    type: ActionType.setUnreachable;
+    unreachable: boolean;
 }
 
 export type Action =
@@ -56,4 +64,5 @@ export type Action =
     | UpdateSwitchAction
     | AddSwitchAction
     | DeleteSwitchAction
-    | UpdateStatusAction;
+    | UpdateStatusAction
+    | SetUnreachableAction;

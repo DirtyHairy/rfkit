@@ -4,6 +4,7 @@ import './scss/status-display.scss';
 
 export interface Props {
     status?: Status;
+    unreachable: boolean;
 }
 
 function formatUptime(uptime: number) {
@@ -21,9 +22,11 @@ function formatUptime(uptime: number) {
     }${uptime}s`;
 }
 
-export const StatusDisplay: FunctionComponent<Props> = ({ status }) =>
+export const StatusDisplay: FunctionComponent<Props> = ({ status, unreachable }) =>
     status ? (
         <div className={`status-display`}>
-            uptime: {formatUptime(status.uptime)} | free heap: {status.heap} bytes
+            {unreachable
+                ? 'device unreachable'
+                : `uptime: ${formatUptime(status.uptime)} | free heap: ${status.heap} bytes`}
         </div>
     ) : null;

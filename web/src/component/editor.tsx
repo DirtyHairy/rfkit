@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact';
-import { Action } from '../state/action';
+import { Action, ActionType } from '../state/action';
 import { Config } from '../state/config';
 import { Input } from './input';
 import * as validator from '../validator';
@@ -12,10 +12,11 @@ export interface Props {
     config: Config;
     status?: Status;
     isDirty: boolean;
+    unreachable: boolean;
     dispatch: (action: Action) => void;
 }
 
-export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isDirty }) => (
+export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isDirty, unreachable }) => (
     <>
         <h2>General settings</h2>
 
@@ -24,7 +25,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
             maxLength={32}
             placeholder="enter controller name"
             label="Controller name:"
-            onChange={(value) => dispatch({ type: 'updateConfig', changes: { name: value } })}
+            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { name: value } })}
             invalid={validator.name(config)}
         />
 
@@ -33,7 +34,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
             maxLength={32}
             placeholder="enter hostname"
             label="Hostname:"
-            onChange={(value) => dispatch({ type: 'updateConfig', changes: { hostname: value } })}
+            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { hostname: value } })}
             invalid={validator.hostname(config)}
         />
 
@@ -42,7 +43,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
             maxLength={32}
             placeholder="enter manufacturer"
             label="Manufacturer:"
-            onChange={(value) => dispatch({ type: 'updateConfig', changes: { manufacturer: value } })}
+            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { manufacturer: value } })}
         />
 
         <Input
@@ -50,7 +51,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
             maxLength={32}
             placeholder="enter serial"
             label="Serial:"
-            onChange={(value) => dispatch({ type: 'updateConfig', changes: { serial: value } })}
+            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { serial: value } })}
         />
 
         <Input
@@ -58,7 +59,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
             maxLength={32}
             placeholder="enter model"
             label="Model:"
-            onChange={(value) => dispatch({ type: 'updateConfig', changes: { model: value } })}
+            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { model: value } })}
         />
 
         <Input
@@ -66,7 +67,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
             maxLength={32}
             placeholder="enter revision"
             label="Revision:"
-            onChange={(value) => dispatch({ type: 'updateConfig', changes: { revision: value } })}
+            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { revision: value } })}
         />
 
         <h2 className="headline-switches">Switches</h2>
@@ -76,12 +77,12 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
         ))}
 
         <div className="editor-buttons">
-            <button onClick={() => dispatch({ type: 'addSwitch' })}>Add switch</button>
-            <button className="btn-save" disabled={!isDirty || !validator.config(config)}>
+            <button onClick={() => dispatch({ type: ActionType.addSwitch })}>Add switch</button>
+            <button className="btn-save" disabled={!isDirty || !validator.config}>
                 Save
             </button>
         </div>
 
-        <StatusDisplay status={status}></StatusDisplay>
+        <StatusDisplay status={status} unreachable={unreachable}></StatusDisplay>
     </>
 );

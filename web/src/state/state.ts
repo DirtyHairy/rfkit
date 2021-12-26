@@ -10,6 +10,6 @@ export interface State {
     remoteConfig?: Config;
     status?: Status;
 
-    rebooting: boolean;
+    unreachable: boolean;
     error?: string;
 }

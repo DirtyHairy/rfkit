@@ -4,69 +4,35 @@ import { Editor } from './editor';
 import { reducer } from '../state/reducer';
 import './scss/app.scss';
 import { Loader } from './loader';
-import { State } from '../state/state';
-import { Action } from '../state/action';
+import { ActionType } from '../state/action';
 import { deepEqual } from '../util';
+import { StateApi } from '../state/state-api';
+import { StatusCheck } from '../status-check';
 
-interface StateApi {
-    state: State;
-    dispatch: (action: Action) => void;
-}
+async function loadConfig(api: MutableRef<StateApi>): Promise<void> {
+    const response = await fetch('/api/config');
 
-function scheduleStatusUpdates(api: MutableRef<StateApi>) {
-    const updateStatus = async () => {
-        if (api.current.state.rebooting) {
-            return;
-        }
-
-        try {
-            const response = await fetch('/api/status');
-
-            if (response.ok) {
-                api.current.dispatch({ type: 'updateStatus', status: await response.json() });
-            } else {
-                throw new Error('bad response');
-            }
-        } catch (e) {
-            console.warn(`failed to fetch status: ${e}`);
-        }
-    };
-
-    const worker = async () => {
-        await updateStatus();
-
-        let delay = (Math.floor(performance.now() / 3000) + 1) * 3000 - performance.now();
-        if (delay < 1000) {
-            delay += 3000;
-        }
-
-        setTimeout(worker, delay);
-    };
-
-    worker();
+    api.current.dispatch(
+        response.ok
+            ? {
+                  type: ActionType.resetConfig,
+                  config: await response.json(),
+              }
+            : { type: ActionType.setError, error: 'failed to load config' }
+    );
 }
 
 export const App: FunctionComponent = () => {
-    const [state, dispatch] = useReducer(reducer, { rebooting: false });
+    const [state, dispatch] = useReducer(reducer, { unreachable: false });
 
     const stateApiRef = useRef<StateApi>({ state, dispatch });
     stateApiRef.current.state = state;
     stateApiRef.current.dispatch = dispatch;
 
-    useEffect(() => scheduleStatusUpdates(stateApiRef), []);
+    const statusCheckRef = useRef(new StatusCheck(stateApiRef));
 
-    useEffect(async () => {
-        const response = await fetch('/api/config');
-
-        dispatch(
-            response.ok
-                ? {
-                      type: 'resetConfig',
-                      config: await response.json(),
-                  }
-                : { type: 'setError', error: 'failed to load config' }
-        );
-    }, []);
+    useEffect(() => statusCheckRef.current.start(), []);
+    useEffect(() => loadConfig(stateApiRef), []);
 
     if (state.error) {
         return <div>ERROR: {state.error}</div>;
@@ -78,6 +44,7 @@ export const App: FunctionComponent = () => {
                 config={state.config}
                 dispatch={dispatch}
                 status={state.status}
+                unreachable={state.unreachable}
                 isDirty={!deepEqual(state.config, state.remoteConfig)}
             />
         );
