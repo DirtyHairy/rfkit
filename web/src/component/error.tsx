@@ -6,18 +6,26 @@ import './scss/error.scss';
 export interface Props {
     message: string;
     onRetry?: () => void;
+    onClose?: () => void;
 }
 
-export const ErrorMsg: FunctionComponent<Props> = ({ message, onRetry }) => {
+export const ErrorMsg: FunctionComponent<Props> = ({ message, onRetry, onClose }) => {
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
-        const handler = (e: KeyboardEvent) => e.key === 'Tab' && e.preventDefault();
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === 'Tab') {
+                buttonRef.current?.focus();
+                e.preventDefault();
+            }
+
+            if (e.key === 'Escape' && onClose) {
+                onClose();
+            }
+        };
 
         document.addEventListener('keydown', handler, true);
-        if (buttonRef.current) {
-            buttonRef.current.focus();
-        }
+        buttonRef.current?.focus();
 
         return () => document.removeEventListener('keydown', handler, true);
     }, []);
@@ -31,8 +39,13 @@ export const ErrorMsg: FunctionComponent<Props> = ({ message, onRetry }) => {
                     {message}
 
                     {!!onRetry && (
-                        <button ref={buttonRef} className="btn-error" onClick={onRetry}>
+                        <button ref={buttonRef} onClick={onRetry}>
                             Retry
+                        </button>
+                    )}
+                    {!!onClose && (
+                        <button ref={buttonRef} onClick={onClose}>
+                            Close
                         </button>
                     )}
                 </div>

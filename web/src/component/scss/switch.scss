@@ -3,9 +3,11 @@
     border-radius: 1em;
     padding: 1em;
     margin-bottom: 1.5em;
+    transition: border-color 250ms;
 
     .headline {
         position: relative;
+        transition: color 250ms;
     }
 
     .switch-settings {
@@ -19,33 +21,32 @@
         margin-top: 1.5em;
         position: relative;
         transition: margin-top 250ms;
+
+        button {
+            width: 5em;
+
+            &.btn-delete {
+                position: absolute;
+                right: 0;
+            }
+
+            &:not(:first-child) {
+                margin-left: 1.5em;
+            }
+        }
+
     }
 
-    button {
-        width: 5em;
-
-        &.expander {
-            color: black;
-            position: absolute;
-            right: 0;
-            display: inline-block;
-            background: none;
-            padding: 0;
-            border: none;
-            width: auto;
-            margin: 0;
-
-            transition: transform 250ms;
-        }
-
-        &.btn-delete {
-            position: absolute;
-            right: 0;
-        }
-
-        &:not(:first-child) {
-            margin-left: 1.5em;
-        }
+    button.expander {
+        color: black;
+        position: absolute;
+        right: 0;
+        display: inline-block;
+        background: none;
+        padding: 0;
+        border: none;
+        width: auto;
+        transition: transform 250ms;
     }
 
     &.collapsed {

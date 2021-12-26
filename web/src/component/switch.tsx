@@ -6,6 +6,8 @@ import './scss/switch.scss';
 import * as validator from '../validator';
 import { useState } from 'preact/hooks';
 import { NumberInput } from './number-input';
+import { Loader } from './loader';
+import { ErrorMsg } from './error';
 
 export interface Props {
     config: Config;
@@ -13,18 +15,54 @@ export interface Props {
     dispatch: (action: Action) => void;
 }
 
+const enum CommandState {
+    none,
+    sending,
+    error,
+}
+
 export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) => {
     const [expanded, setExpanded] = useState(config.switches[index]?.name === '');
+    const [commandState, setCommandState] = useState(CommandState.none);
 
     const swtch = config.switches[index];
     if (!swtch) {
         return null;
     }
 
-    const isValid = validator.swtch(index)(config);
+    const sendCommand = async (code: string): Promise<void> => {
+        setCommandState(CommandState.sending);
+
+        try {
+            const response = await fetch('/api/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    code,
+                    pulseLenght: swtch.pulseLength,
+                    protocol: swtch.protocol,
+                    repeat: swtch.repeat,
+                }),
+            });
+
+            if (!response.ok) {
+                throw Error();
+            }
+
+            setCommandState(CommandState.none);
+        } catch (e) {
+            setCommandState(CommandState.error);
+        }
+    };
 
     return (
-        <div className={`switch ${expanded ? 'expanded' : 'collapsed'} ${isValid ? 'valid' : 'invalid'}`}>
+        <div
+            className={`switch ${expanded ? 'expanded' : 'collapsed'} ${
+                validator.swtch(index)(config) ? 'valid' : 'invalid'
+            }`}
+        >
             <h3 className="headline">
                 {swtch.name || `Switch ${index}`}
                 <button tabIndex={-1} className="expander" onClick={() => setExpanded(!expanded)}>
@@ -120,11 +158,27 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                 ></NumberInput>
             </div>
 
+            {commandState === CommandState.sending && <Loader message="sending"></Loader>}
+            {commandState === CommandState.error && (
+                <ErrorMsg
+                    message="Failed to send command."
+                    onClose={() => setCommandState(CommandState.none)}
+                ></ErrorMsg>
+            )}
+
             <div className="switch-buttons">
-                <button className="btn-on" disabled={!!validator.switchOn(index)(config)}>
+                <button
+                    className="btn-on"
+                    disabled={!!validator.switchOn(index)(config)}
+                    onClick={() => sendCommand(swtch.on)}
+                >
                     On
                 </button>
-                <button className="btn-off" disabled={!!validator.switchOff(index)(config)}>
+                <button
+                    className="btn-off"
+                    disabled={!!validator.switchOff(index)(config)}
+                    onClick={() => sendCommand(swtch.off)}
+                >
                     Off
                 </button>
                 <button className="btn-delete" onClick={() => dispatch({ type: ActionType.deleteSwitch, index })}>
