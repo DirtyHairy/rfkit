@@ -1,6 +1,7 @@
 import './scss/input.scss';
 
 import { FunctionComponent } from 'preact';
+import { JSXInternal } from 'preact/src/jsx';
 
 export interface Props {
     value: string;
@@ -8,8 +9,9 @@ export interface Props {
     placeholder: string;
     label: string;
     invalid?: string | undefined;
-    type?: string;
     noFocus?: boolean;
+    inputMode?: string;
+    pattern?: string;
     onChange?: (value: string) => void;
 }
 
@@ -18,15 +20,16 @@ export const Input: FunctionComponent<Props> = (props: Props) => {
         <label className={`rfkit-input ${props.invalid !== undefined ? 'invalid' : 'valid'}`}>
             <span className="label">{props.label}</span>
             <input
-                value={props.value}
-                maxLength={props.maxLength}
                 onInput={(e) => props.onChange && props.onChange((e.target as HTMLInputElement).value)}
-                placeholder={props.placeholder}
                 // eslint-disable-next-line
                 spellCheck={'false' as any}
-                type={props.type}
                 autoComplete="0"
                 tabIndex={props.noFocus ? -1 : undefined}
+                value={props.value}
+                maxLength={props.maxLength}
+                placeholder={props.placeholder}
+                pattern={props.pattern}
+                inputMode={props.inputMode}
             ></input>
             {props.invalid !== undefined && <span className="validation-error">{props.invalid}</span>}
         </label>

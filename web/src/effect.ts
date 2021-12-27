@@ -37,7 +37,7 @@ export async function reboot(api: MutableRef<StateApi>, statusCheck: MutableRef<
             throw new Error();
         }
 
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 10000));
 
         statusCheck.current.start();
         while (api.current.state.unreachable) {
