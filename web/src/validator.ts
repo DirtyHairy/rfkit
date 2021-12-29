@@ -21,6 +21,14 @@ export const hostname: Validator = (config) => {
     return undefined;
 };
 
+export const manufacturer: Validator = (config) => (config.manufacturer.trim() === '' ? MSG_MANDATORY : undefined);
+
+export const serial: Validator = (config) => (config.serial.trim() === '' ? MSG_MANDATORY : undefined);
+
+export const model: Validator = (config) => (config.model.trim() === '' ? MSG_MANDATORY : undefined);
+
+export const revision: Validator = (config) => (config.revision.trim() === '' ? MSG_MANDATORY : undefined);
+
 export const switchName: (index: number) => Validator = (index) => (config) => {
     const swtch = config.switches[index];
     if (!swtch) {
@@ -56,7 +64,10 @@ export const swtch: (index: number) => BoolValidator = (index) => (config) =>
     );
 
 export const config: BoolValidator = (cfg) =>
-    !(name(cfg) || hostname(cfg) || cfg.switches.some((_, i) => !swtch(i)(cfg)));
+    !(
+        [name, manufacturer, hostname, manufacturer, serial, model, revision].some((v) => v(cfg) !== undefined) ||
+        cfg.switches.some((_, i) => !swtch(i)(cfg))
+    );
 
 function validateCode(code: string): string | undefined {
     if (code.trim() === '') {

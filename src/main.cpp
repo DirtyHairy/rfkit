@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <HomeSpan.h>
 
-#include "config.h"
-#include "server.h"
+#include "config.hxx"
+#include "server.hxx"
 
 Config config;
 
@@ -10,6 +10,7 @@ void setupServer() { server::start(&config); }
 
 void setup() {
     Serial.begin(115200);
+
     config.load();
 
     homeSpan.setHostNameSuffix("");

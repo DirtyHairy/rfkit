@@ -1,4 +1,4 @@
-#include "Config.h"
+#include "config.hxx"
 
 #include <ArduinoJson.h>
 
@@ -69,7 +69,7 @@ String Config::serialize() {
     return result;
 }
 
-bool Config::deserializeFrom(JsonVariant& data) {
+bool Config::deserializeFrom(JsonDocument& data) {
     Config config;
 
     config.name = data["name"].as<const char*>();
@@ -106,7 +106,7 @@ bool Config::deserializeFrom(JsonVariant& data) {
         swtch.codeOff = serializedSwitch["off"].as<const char*>();
         swtch.pulseLength = serializedSwitch["pulseLength"].as<uint32_t>();
         swtch.protocol = serializedSwitch["protocol"].as<uint32_t>();
-        swtch.repeat = serializedSwitch["repear"].as<uint32_t>();
+        swtch.repeat = serializedSwitch["repeat"].as<uint32_t>();
 
         if (!(swtch.name && swtch.codeOn && swtch.codeOff)) {
             return false;

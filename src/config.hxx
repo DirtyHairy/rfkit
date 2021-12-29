@@ -36,15 +36,15 @@ class Config {
     const char* getRevision() const;
 
     String serialize();
-    bool deserializeFrom(JsonVariant& data);
+    bool deserializeFrom(JsonDocument& data);
 
    private:
-    String name;
-    String hostname;
-    String manufacturer;
-    String serial;
-    String model;
-    String revision;
+    String name{"RFKit"};
+    String hostname{"rfkit"};
+    String manufacturer{"ACME Corp."};
+    String serial{"0815"};
+    String model{"0"};
+    String revision{"0.0.1"};
     std::vector<Switch> switches;
 };
 
