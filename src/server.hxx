@@ -5,7 +5,7 @@ class Config;
 
 namespace server {
 
-void start(Config* config);
+void start();
 
 }
 

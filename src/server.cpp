@@ -11,6 +11,8 @@
 #include "guard.hxx"
 #include "index_html.h"
 
+#define TAG "srv"
+
 namespace {
 
 constexpr int POST_LIMIT = 16 * 1024;
@@ -44,10 +46,20 @@ esp_err_t handler_status(httpd_req_t* req) {
 }
 
 esp_err_t handler_config_get(httpd_req_t* req) {
-    String serializedConfig = ((Config*)req->user_ctx)->serialize();
+    size_t len;
+    char* buffer = Config::load(len);
 
     httpd_resp_set_hdr(req, "Content-Type", "application/json");
-    httpd_resp_send(req, serializedConfig.c_str(), serializedConfig.length());
+
+    if (buffer) {
+        httpd_resp_send(req, buffer, len);
+        free(buffer);
+    } else {
+        Config defaultConfig;
+        String serializedConfig = defaultConfig.serialize();
+
+        httpd_resp_send(req, serializedConfig.c_str(), serializedConfig.length());
+    }
 
     return ESP_OK;
 }
@@ -62,7 +74,7 @@ esp_err_t handler_config_post(httpd_req_t* req) {
 
     char* buffer = (char*)malloc(req->content_len);
     if (!buffer) {
-        ESP_LOGE("failed to allocate buffer for POST body");
+        ESP_LOGE(TAG, "failed to allocate buffer for POST body");
 
         httpd_resp_set_status(req, "500 Internal Server Error");
         httpd_resp_send(req, nullptr, 0);
@@ -72,28 +84,30 @@ esp_err_t handler_config_post(httpd_req_t* req) {
 
     Guard free_buffer_guard([=] { free(buffer); });
 
-    int recv_result = httpd_req_recv(req, buffer, req->content_len);
+    ssize_t recv_result = httpd_req_recv(req, buffer, req->content_len);
 
-    if (recv_result < HTTPD_SOCK_ERR_TIMEOUT) {
+    if (recv_result == HTTPD_SOCK_ERR_TIMEOUT) {
         httpd_resp_send_408(req);
 
         return ESP_OK;
     }
 
     if (recv_result < 0) {
-        ESP_LOGE("failed to receive POST body");
+        ESP_LOGE(TAG, "failed to receive POST body");
         return ESP_FAIL;
     }
 
-    DynamicJsonDocument json(JSON_DOC_SIZE);
-    if (deserializeJson(json, buffer) != DeserializationError::Ok) {
+    Config config;
+
+    if (!config.deserializeFrom(buffer, recv_result)) {
         httpd_resp_set_status(req, "400 Bad Request");
         httpd_resp_send(req, nullptr, 0);
 
         return ESP_OK;
-    };
+    }
 
-    ((Config*)req->user_ctx)->deserializeFrom(json);
+    String serializedConfig = config.serialize();
+    Config::save(serializedConfig.c_str(), serializedConfig.length());
 
     httpd_resp_send(req, nullptr, 0);
 
@@ -111,12 +125,12 @@ esp_err_t handler_reboot(httpd_req_t* req) {
 
 }  // namespace
 
-void server::start(Config* config) {
+void server::start() {
     httpd_config_t cfg = HTTPD_DEFAULT_CONFIG();
     cfg.lru_purge_enable = true;
 
     if (httpd_start(&httpd_handle, &cfg) != ESP_OK) {
-        ESP_LOGE("failed to start HTTP server");
+        ESP_LOGE(TAG, "failed to start HTTP server");
         return;
     }
 
@@ -126,10 +140,10 @@ void server::start(Config* config) {
     uri = {.uri = "/api/status", .method = HTTP_GET, .handler = handler_status, .user_ctx = nullptr};
     httpd_register_uri_handler(httpd_handle, &uri);
 
-    uri = {.uri = "/api/config", .method = HTTP_GET, .handler = handler_config_get, .user_ctx = config};
+    uri = {.uri = "/api/config", .method = HTTP_GET, .handler = handler_config_get, .user_ctx = nullptr};
     httpd_register_uri_handler(httpd_handle, &uri);
 
-    uri = {.uri = "/api/config", .method = HTTP_POST, .handler = handler_config_post, .user_ctx = config};
+    uri = {.uri = "/api/config", .method = HTTP_POST, .handler = handler_config_post, .user_ctx = nullptr};
     httpd_register_uri_handler(httpd_handle, &uri);
 
     uri = {.uri = "/api/reboot", .method = HTTP_POST, .handler = handler_reboot, .user_ctx = nullptr};

@@ -8,25 +8,36 @@
 
 class Config {
    public:
-    static constexpr size_t JSON_DOC_SIZE = 16 * 1024;
+    static constexpr size_t JSON_DOC_SIZE = 2 * 1024;
 
    public:
     struct Switch {
+        friend Config;
+
        public:
-        String name;
-        String codeOn;
-        String codeOff;
+        const char* getName() const;
+        const char* getCodeOn() const;
+        const char* getCodeOff() const;
+        uint32_t getProtocol() const;
+        uint32_t getPulseLength() const;
+        uint32_t getRepeat() const;
+
+       private:
+        const char* name;
+        const char* codeOn;
+        const char* codeOff;
+
         uint32_t protocol;
         uint32_t pulseLength;
         uint32_t repeat;
     };
 
    public:
-    Config();
+    Config() = default;
+    bool deserializeFrom(char* buffer, size_t size);
 
-    Config& operator=(const Config&);
-
-    void load();
+    static char* load(size_t& size);
+    static void save(const char* serializedData, size_t size);
 
     const char* getName() const;
     const char* getHostname() const;
@@ -39,12 +50,13 @@ class Config {
     bool deserializeFrom(JsonDocument& data);
 
    private:
-    String name{"RFKit"};
-    String hostname{"rfkit"};
-    String manufacturer{"ACME Corp."};
-    String serial{"0815"};
-    String model{"0"};
-    String revision{"0.0.1"};
+    const char* name{"RFKit"};
+    const char* hostname{"rfkit"};
+    const char* manufacturer{"ACME Corp."};
+    const char* serial{"0815"};
+    const char* model{"0"};
+    const char* revision{"0.0.1"};
+
     std::vector<Switch> switches;
 };
 
