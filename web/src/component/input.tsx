@@ -1,7 +1,7 @@
 import './scss/input.scss';
 
-import { FunctionComponent } from 'preact';
-import { JSXInternal } from 'preact/src/jsx';
+import { FunctionComponent } from 'react';
+import React from 'react';
 
 export interface Props {
     value: string;
@@ -10,7 +10,7 @@ export interface Props {
     label: string;
     invalid?: string | undefined;
     noFocus?: boolean;
-    inputMode?: string;
+    inputMode?: 'numeric';
     pattern?: string;
     onChange?: (value: string) => void;
 }

@@ -1,7 +1,8 @@
 import { AppState } from '../state/state';
 import { ErrorMsg } from './error';
-import { FunctionComponent } from 'preact';
+import { FunctionComponent } from 'react';
 import { Loader } from './loader';
+import React from 'react';
 
 export interface Props {
     appState: AppState;

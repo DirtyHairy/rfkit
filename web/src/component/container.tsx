@@ -1,9 +1,11 @@
 import './scss/container.scss';
 
-import { ComponentChildren, FunctionComponent } from 'preact';
+import { FunctionComponent, ReactNode } from 'react';
+
+import React from 'react';
 
 export interface Props {
-    children?: ComponentChildren;
+    children?: ReactNode;
 }
 
 export const Container: FunctionComponent = ({ children }: Props) => (

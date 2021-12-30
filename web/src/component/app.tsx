@@ -1,12 +1,12 @@
 import './scss/app.scss';
 
+import { FunctionComponent, useEffect, useReducer, useRef } from 'react';
 import { loadConfig, reboot, saveConfig } from '../effect';
-import { useEffect, useReducer, useRef } from 'preact/hooks';
 
 import { AppState } from '../state/state';
 import { Editor } from './editor';
-import { FunctionComponent } from 'preact';
 import { Overlay } from './overlay';
+import React from 'react';
 import { StateApi } from '../state/state-api';
 import { StatusCheck } from '../status-check';
 import { deepEqual } from '../util';
@@ -22,7 +22,9 @@ export const App: FunctionComponent = () => {
     const statusCheckRef = useRef(new StatusCheck(stateApiRef));
 
     useEffect(() => statusCheckRef.current.start(), []);
-    useEffect(() => loadConfig(stateApiRef), []);
+    useEffect(() => {
+        loadConfig(stateApiRef);
+    }, []);
 
     return (
         <>

@@ -1,6 +1,7 @@
 import './scss/status-display.scss';
 
-import { FunctionComponent } from 'preact';
+import { FunctionComponent } from 'react';
+import React from 'react';
 import { Status } from '../state/state';
 
 export interface Props {

@@ -1,9 +1,9 @@
 import './scss/error.scss';
 
-import { useEffect, useRef } from 'preact/hooks';
+import { FunctionComponent, useEffect, useRef } from 'react';
 
 import { Backdrop } from './backdrop';
-import { FunctionComponent } from 'preact';
+import React from 'react';
 
 export interface Props {
     message: string;

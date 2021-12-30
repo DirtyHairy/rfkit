@@ -1,10 +1,13 @@
 /* eslint-disable */
 
-import typescript from '@rollup/plugin-typescript';
+import * as fs from 'fs';
+
+import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import scss from 'rollup-plugin-scss';
 import { terser } from 'rollup-plugin-terser';
-import * as fs from 'fs';
+import typescript from '@rollup/plugin-typescript';
 
 function buildHtml() {
     return {
@@ -45,6 +48,10 @@ export default {
         scss({ outputStyle: 'compressed' }),
         typescript(),
         nodeResolve(),
+        replace({
+            'process.env.NODE_ENV': '"production"',
+        }),
+        commonjs(),
         buildHtml(),
         ...(process.env.DEV ? [] : [terser({ format: { comments: false } })]),
     ],

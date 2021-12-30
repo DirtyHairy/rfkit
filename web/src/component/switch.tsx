@@ -3,14 +3,14 @@ import './scss/switch.scss';
 import * as validator from '../validator';
 
 import { Action, ActionType } from '../state/action';
+import { FunctionComponent, useState } from 'react';
 
 import { Config } from '../state/config';
 import { ErrorMsg } from './error';
-import { FunctionComponent } from 'preact';
 import { Input } from './input';
 import { Loader } from './loader';
 import { NumberInput } from './number-input';
-import { useState } from 'preact/hooks';
+import React from 'react';
 
 export interface Props {
     config: Config;

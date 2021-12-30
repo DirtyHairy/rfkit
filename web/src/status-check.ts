@@ -1,9 +1,9 @@
 import { ActionType } from './state/action';
-import { MutableRef } from 'preact/hooks';
+import { MutableRefObject } from 'react';
 import { StateApi } from './state/state-api';
 
 export class StatusCheck {
-    constructor(private api: MutableRef<StateApi>) {}
+    constructor(private api: MutableRefObject<StateApi>) {}
 
     start(): void {
         if (this.running) {

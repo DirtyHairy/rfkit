@@ -1,8 +1,9 @@
 import './scss/loader.scss';
 
+import { FunctionComponent, useEffect } from 'react';
+
 import { Backdrop } from './backdrop';
-import { FunctionComponent } from 'preact';
-import { useEffect } from 'preact/hooks';
+import React from 'react';
 
 export interface Props {
     message?: string;

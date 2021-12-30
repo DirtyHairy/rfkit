@@ -5,8 +5,9 @@ import * as validator from '../validator';
 import { Action, ActionType } from '../state/action';
 
 import { Config } from '../state/config';
-import { FunctionComponent } from 'preact';
+import { FunctionComponent } from 'react';
 import { Input } from './input';
+import React from 'react';
 import { Status } from '../state/state';
 import { StatusDisplay } from './status-display';
 import { Switch } from './switch';
@@ -20,77 +21,81 @@ export interface Props {
     onSave: () => void;
 }
 
-export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isDirty, unreachable, onSave }) => (
-    <>
-        <h2>General settings</h2>
+export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isDirty, unreachable, onSave }) => {
+    console.log(config.manufacturer);
 
-        <Input
-            value={config.name}
-            maxLength={32}
-            placeholder="enter controller name"
-            label="Controller name:"
-            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { name: value } })}
-            invalid={validator.name(config)}
-        />
+    return (
+        <>
+            <h2>General settings</h2>
 
-        <Input
-            value={config.hostname}
-            maxLength={32}
-            placeholder="enter hostname"
-            label="Hostname:"
-            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { hostname: value } })}
-            invalid={validator.hostname(config)}
-        />
+            <Input
+                value={config.name}
+                maxLength={32}
+                placeholder="enter controller name"
+                label="Controller name:"
+                onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { name: value } })}
+                invalid={validator.name(config)}
+            />
 
-        <Input
-            value={config.manufacturer}
-            maxLength={32}
-            placeholder="enter manufacturer"
-            label="Manufacturer:"
-            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { manufacturer: value } })}
-        />
+            <Input
+                value={config.hostname}
+                maxLength={32}
+                placeholder="enter hostname"
+                label="Hostname:"
+                onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { hostname: value } })}
+                invalid={validator.hostname(config)}
+            />
 
-        <Input
-            value={config.serial}
-            maxLength={32}
-            placeholder="enter serial"
-            label="Serial:"
-            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { serial: value } })}
-        />
+            <Input
+                value={config.manufacturer}
+                maxLength={32}
+                placeholder="enter manufacturer"
+                label="Manufacturer:"
+                onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { manufacturer: value } })}
+            />
 
-        <Input
-            value={config.model}
-            maxLength={32}
-            placeholder="enter model"
-            label="Model:"
-            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { model: value } })}
-        />
+            <Input
+                value={config.serial}
+                maxLength={32}
+                placeholder="enter serial"
+                label="Serial:"
+                onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { serial: value } })}
+            />
 
-        <Input
-            value={config.revision}
-            maxLength={32}
-            placeholder="enter revision"
-            label="Revision:"
-            onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { revision: value } })}
-        />
+            <Input
+                value={config.model}
+                maxLength={32}
+                placeholder="enter model"
+                label="Model:"
+                onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { model: value } })}
+            />
 
-        <h2 className="headline-switches">Switches</h2>
+            <Input
+                value={config.revision}
+                maxLength={32}
+                placeholder="enter revision"
+                label="Revision:"
+                onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { revision: value } })}
+            />
 
-        {config.switches.map((_, i) => (
-            <Switch key={i} config={config} index={i} dispatch={dispatch}></Switch>
-        ))}
+            <h2 className="headline-switches">Switches</h2>
 
-        <div className="editor-buttons">
-            <button onClick={() => dispatch({ type: ActionType.addSwitch })}>Add switch</button>
-            <button
-                className={`btn-save ${status?.protect ? 'hidden' : ''}`}
-                disabled={!isDirty || !validator.config(config)}
-                onClick={onSave}
-            >
-                Save
-            </button>
-        </div>
+            {config.switches.map((_, i) => (
+                <Switch key={i} config={config} index={i} dispatch={dispatch}></Switch>
+            ))}
 
-        <StatusDisplay status={status} unreachable={unreachable}></StatusDisplay>
-    </>
-);
+            <div className="editor-buttons">
+                <button onClick={() => dispatch({ type: ActionType.addSwitch })}>Add switch</button>
+                <button
+                    className={`btn-save ${status?.protect ? 'hidden' : ''}`}
+                    disabled={!isDirty || !validator.config(config)}
+                    onClick={onSave}
+                >
+                    Save
+                </button>
+            </div>
+
+            <StatusDisplay status={status} unreachable={unreachable}></StatusDisplay>
+        </>
+    );
+};

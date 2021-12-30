@@ -1,6 +1,7 @@
 import { App } from './component/app';
 import { Container } from './component/container';
-import { render } from 'preact';
+import React from 'react';
+import { render } from 'react-dom';
 
 render(
     <Container>

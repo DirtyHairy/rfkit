@@ -1,6 +1,6 @@
-import { FunctionComponent } from 'preact';
+import { FunctionComponent } from 'react';
 import { Input } from './input';
-import { useRef } from 'preact/hooks';
+import React from 'react';
 
 export interface Props {
     value: number | undefined;
@@ -22,27 +22,22 @@ function normalizeValue(value: string, max: number | undefined = 1000000): numbe
     return Math.min(parseInt(value, 10), max) || undefined;
 }
 
-export const NumberInput: FunctionComponent<Props> = (props) => {
-    const ref = useRef<HTMLInputElement>(null);
+export const NumberInput: FunctionComponent<Props> = (props) => (
+    <Input
+        label={props.label}
+        placeholder={props.placeholder}
+        invalid={props.invalid}
+        maxLength={props.max ? Math.floor(Math.log(props.max) / Math.log(10)) + 1 : undefined}
+        value={props.value && props.value > 0 ? props.value.toString() : ''}
+        onChange={(value) => {
+            if (!props.onChange) {
+                return;
+            }
 
-    return (
-        <Input
-            ref={ref}
-            label={props.label}
-            placeholder={props.placeholder}
-            invalid={props.invalid}
-            maxLength={props.max ? Math.floor(Math.log(props.max) / Math.log(10)) + 1 : undefined}
-            value={props.value && props.value > 0 ? props.value.toString() : ''}
-            onChange={(value) => {
-                if (!props.onChange) {
-                    return;
-                }
-
-                props.onChange(normalizeValue(value, props.max));
-            }}
-            pattern="[0-9]*"
-            inputMode="numeric"
-            noFocus={props.noFocus}
-        ></Input>
-    );
-};
+            props.onChange(normalizeValue(value, props.max));
+        }}
+        pattern="[0-9]*"
+        inputMode="numeric"
+        noFocus={props.noFocus}
+    ></Input>
+);

@@ -2,8 +2,7 @@
   "compilerOptions": {
     "target": "es2020",
     "lib": ["es2020", "dom"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact",
+    "jsx": "react",
     "module": "es2015",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

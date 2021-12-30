@@ -1,10 +1,10 @@
 import { ActionType } from './state/action';
 import { AppState } from './state/state';
-import { MutableRef } from 'preact/hooks';
+import { MutableRefObject } from 'react';
 import { StateApi } from './state/state-api';
 import { StatusCheck } from './status-check';
 
-export async function loadConfig(api: MutableRef<StateApi>): Promise<void> {
+export async function loadConfig(api: MutableRefObject<StateApi>): Promise<void> {
     api.current.dispatch({ type: ActionType.updateAppState, appState: AppState.loading });
 
     try {
@@ -22,7 +22,10 @@ export async function loadConfig(api: MutableRef<StateApi>): Promise<void> {
     }
 }
 
-export async function reboot(api: MutableRef<StateApi>, statusCheck: MutableRef<StatusCheck>): Promise<void> {
+export async function reboot(
+    api: MutableRefObject<StateApi>,
+    statusCheck: MutableRefObject<StatusCheck>
+): Promise<void> {
     api.current.dispatch({ type: ActionType.updateAppState, appState: AppState.rebooting });
 
     try {
@@ -50,7 +53,10 @@ export async function reboot(api: MutableRef<StateApi>, statusCheck: MutableRef<
     }
 }
 
-export async function saveConfig(api: MutableRef<StateApi>, statusCheck: MutableRef<StatusCheck>): Promise<void> {
+export async function saveConfig(
+    api: MutableRefObject<StateApi>,
+    statusCheck: MutableRefObject<StatusCheck>
+): Promise<void> {
     api.current.dispatch({ type: ActionType.updateAppState, appState: AppState.saving });
 
     try {
