@@ -8,6 +8,7 @@
 #include <freertos/timers.h>
 
 #include "config.hxx"
+#include "gpio.hxx"
 #include "guard.hxx"
 #include "index_html.h"
 
@@ -35,6 +36,7 @@ esp_err_t handler_status(httpd_req_t* req) {
 
     json["uptime"] = (int32_t)(esp_timer_get_time() / 1000000);
     json["heap"] = esp_get_free_heap_size();
+    json["protect"] = gpio::protectOn();
 
     String serializedJson;
     serializeJson(json, serializedJson);

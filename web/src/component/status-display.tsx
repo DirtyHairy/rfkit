@@ -28,6 +28,8 @@ export const StatusDisplay: FunctionComponent<Props> = ({ status, unreachable })
         <div className={`status-display`}>
             {unreachable
                 ? 'device unreachable'
-                : `uptime: ${formatUptime(status.uptime)} | free heap: ${status.heap} bytes`}
+                : `uptime: ${formatUptime(status.uptime)} | free heap: ${status.heap} bytes${
+                      status.protect ? ' | write-protect on' : ''
+                  }`}
         </div>
     ) : null;

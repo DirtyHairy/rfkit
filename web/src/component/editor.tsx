@@ -82,7 +82,11 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
 
         <div className="editor-buttons">
             <button onClick={() => dispatch({ type: ActionType.addSwitch })}>Add switch</button>
-            <button className="btn-save" disabled={!isDirty || !validator.config(config)} onClick={onSave}>
+            <button
+                className={`btn-save ${status?.protect ? 'hidden' : ''}`}
+                disabled={!isDirty || !validator.config(config)}
+                onClick={onSave}
+            >
                 Save
             </button>
         </div>

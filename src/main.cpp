@@ -3,6 +3,7 @@
 #include <esp_log.h>
 #include <nvs_flash.h>
 
+#include "config.h"
 #include "config.hxx"
 #include "server.hxx"
 
@@ -11,6 +12,10 @@
 void setupServer() { server::start(); }
 
 void setup() {
+    pinMode(GPIO_RF_SEND, OUTPUT);
+    pinMode(GPIO_PROTECT, INPUT_PULLUP);
+    digitalWrite(GPIO_RF_SEND, LOW);
+
     Serial.begin(115200);
 
     if (nvs_flash_init() != ESP_OK) {

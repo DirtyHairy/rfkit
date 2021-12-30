@@ -13,6 +13,7 @@ export const enum AppState {
 export interface Status {
     uptime: number;
     heap: number;
+    protect: boolean;
 }
 
 export interface State {
