@@ -67,6 +67,13 @@ esp_err_t handler_config_get(httpd_req_t* req) {
 }
 
 esp_err_t handler_config_post(httpd_req_t* req) {
+    if (gpio::protectOn()) {
+        httpd_resp_set_status(req, "403 Forbidden");
+        httpd_resp_send(req, nullptr, 0);
+
+        return ESP_OK;
+    }
+
     if (req->content_len > POST_LIMIT) {
         httpd_resp_set_status(req, "400 Bad Request");
         httpd_resp_send(req, nullptr, 0);
