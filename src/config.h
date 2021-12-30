@@ -1,2 +1,5 @@
 #define GPIO_PROTECT 27
-#define GPIO_RF_SEND 26
+#define GPIO_RC_TRANSMIT 26
+
+#define STACK_RC_TASK 8192
+#define PRIORITY_RC_TASK 1

@@ -7,21 +7,46 @@
 #include <esp_log.h>
 #include <freertos/timers.h>
 
+#include <cstring>
+
 #include "config.hxx"
 #include "gpio.hxx"
 #include "guard.hxx"
 #include "index_html.h"
+#include "rc.hxx"
 
 #define TAG "srv"
 
 namespace {
 
-constexpr int POST_LIMIT = 16 * 1024;
-constexpr int JSON_DOC_SIZE = 2048;
+constexpr size_t POST_CONFIG_LIMIT = 16 * 1024;
+constexpr size_t POST_SEND_LIMIT = 128;
+constexpr size_t JSON_DOC_SEND_SIZE = 128;
 
 httpd_handle_t httpd_handle;
 
 void rebootTimerCallback(TimerHandle_t) { esp_restart(); }
+
+esp_err_t send_400(httpd_req_t* req) {
+    httpd_resp_set_status(req, "400 Bad Request");
+    httpd_resp_send(req, nullptr, 0);
+
+    return ESP_OK;
+}
+
+esp_err_t send_403(httpd_req_t* req) {
+    httpd_resp_set_status(req, "403 Forbidden");
+    httpd_resp_send(req, nullptr, 0);
+
+    return ESP_OK;
+}
+
+esp_err_t send_500(httpd_req_t* req) {
+    httpd_resp_set_status(req, "500 Internal Server Error");
+    httpd_resp_send(req, nullptr, 0);
+
+    return ESP_OK;
+}
 
 esp_err_t handler_index(httpd_req_t* req) {
     httpd_resp_set_hdr(req, "Content-Type", "text/html; charset=utf-8");
@@ -68,27 +93,17 @@ esp_err_t handler_config_get(httpd_req_t* req) {
 
 esp_err_t handler_config_post(httpd_req_t* req) {
     if (gpio::protectOn()) {
-        httpd_resp_set_status(req, "403 Forbidden");
-        httpd_resp_send(req, nullptr, 0);
-
-        return ESP_OK;
+        return send_403(req);
     }
 
-    if (req->content_len > POST_LIMIT) {
-        httpd_resp_set_status(req, "400 Bad Request");
-        httpd_resp_send(req, nullptr, 0);
-
-        return ESP_OK;
+    if (req->content_len > POST_CONFIG_LIMIT) {
+        return send_400(req);
     }
 
     char* buffer = (char*)malloc(req->content_len);
     if (!buffer) {
         ESP_LOGE(TAG, "failed to allocate buffer for POST body");
-
-        httpd_resp_set_status(req, "500 Internal Server Error");
-        httpd_resp_send(req, nullptr, 0);
-
-        return ESP_OK;
+        return send_500(req);
     }
 
     Guard free_buffer_guard([=] { free(buffer); });
@@ -109,10 +124,7 @@ esp_err_t handler_config_post(httpd_req_t* req) {
     Config config;
 
     if (!config.deserializeFrom(buffer, recv_result)) {
-        httpd_resp_set_status(req, "400 Bad Request");
-        httpd_resp_send(req, nullptr, 0);
-
-        return ESP_OK;
+        return send_400(req);
     }
 
     String serializedConfig = config.serialize();
@@ -128,6 +140,49 @@ esp_err_t handler_reboot(httpd_req_t* req) {
 
     TimerHandle_t rebootTimer = xTimerCreate("reboot", pdMS_TO_TICKS(250), pdFALSE, nullptr, rebootTimerCallback);
     xTimerStart(rebootTimer, 0);
+
+    return ESP_OK;
+}
+
+esp_err_t handler_send(httpd_req_t* req) {
+    if (req->content_len > POST_SEND_LIMIT) {
+        return send_400(req);
+    }
+
+    char buffer[req->content_len];
+    ssize_t recv_result = httpd_req_recv(req, buffer, req->content_len);
+
+    if (recv_result == HTTPD_SOCK_ERR_TIMEOUT) {
+        httpd_resp_send_408(req);
+
+        return ESP_OK;
+    }
+
+    if (recv_result < 0) {
+        ESP_LOGE(TAG, "failed to receive POST body");
+        return ESP_FAIL;
+    }
+
+    StaticJsonDocument<JSON_DOC_SEND_SIZE> json;
+    if (deserializeJson(json, buffer, recv_result) != DeserializationError::Ok) {
+        return send_400(req);
+    }
+
+    const char* code = json["code"].as<const char*>();
+    if (!code) {
+        return send_400(req);
+    }
+
+    RCCommand command;
+    strncpy(command.code, code, 32);
+    command.code[32] = '\0';
+    command.protocol = json["protocol"].as<uint32_t>();
+    command.pulseLength = json["pulseLength"].as<uint32_t>();
+    command.repeat = json["repeat"].as<uint32_t>();
+
+    rc::send(command);
+
+    httpd_resp_send(req, nullptr, 0);
 
     return ESP_OK;
 }
@@ -156,5 +211,8 @@ void server::start() {
     httpd_register_uri_handler(httpd_handle, &uri);
 
     uri = {.uri = "/api/reboot", .method = HTTP_POST, .handler = handler_reboot, .user_ctx = nullptr};
+    httpd_register_uri_handler(httpd_handle, &uri);
+
+    uri = {.uri = "/api/send", .method = HTTP_POST, .handler = handler_send, .user_ctx = nullptr};
     httpd_register_uri_handler(httpd_handle, &uri);
 }

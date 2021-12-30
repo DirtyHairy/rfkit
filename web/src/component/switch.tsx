@@ -44,7 +44,7 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                 },
                 body: JSON.stringify({
                     code,
-                    pulseLenght: swtch.pulseLength,
+                    pulseLength: swtch.pulseLength,
                     protocol: swtch.protocol,
                     repeat: swtch.repeat,
                 }),

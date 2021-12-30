@@ -1,9 +1,9 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#include <Arduino.h>
 #include <ArduinoJson.h>
 
+#include <cstdint>
 #include <vector>
 
 class Config {

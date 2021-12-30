@@ -5,16 +5,15 @@
 
 #include "config.h"
 #include "config.hxx"
+#include "rc.hxx"
 #include "server.hxx"
 
 #define TAG "main"
 
-void setupServer() { server::start(); }
-
 void setup() {
-    pinMode(GPIO_RF_SEND, OUTPUT);
+    pinMode(GPIO_RC_TRANSMIT, OUTPUT);
     pinMode(GPIO_PROTECT, INPUT_PULLUP);
-    digitalWrite(GPIO_RF_SEND, LOW);
+    digitalWrite(GPIO_RC_TRANSMIT, LOW);
 
     Serial.begin(115200);
 
@@ -22,8 +21,10 @@ void setup() {
         ESP_LOGE(TAG, "failed to init NVS");
     }
 
+    rc::start();
+
     homeSpan.setHostNameSuffix("");
-    homeSpan.setWifiCallback(setupServer);
+    homeSpan.setWifiCallback(server::start);
     homeSpan.setPortNum(8080);
 
     Config config;
