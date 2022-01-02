@@ -51,6 +51,7 @@ void homespan::start() {
         config.deserializeFrom(serializedConfig, serializedConfigSize);
     }
 
+    homeSpan.setMaxConnections(DEFAULT_MAX_CONNECTIONS - MAX_CONNECTIONS_WEBSERVER);
     homeSpan.begin(Category::Bridges, config.getName(), config.getHostname());
 
     createAcessory(config.getName());

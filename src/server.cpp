@@ -9,6 +9,7 @@
 
 #include <cstring>
 
+#include "config.h"
 #include "config.hxx"
 #include "gpio.hxx"
 #include "guard.hxx"
@@ -192,6 +193,7 @@ esp_err_t handler_send(httpd_req_t* req) {
 void server::start() {
     httpd_config_t cfg = HTTPD_DEFAULT_CONFIG();
     cfg.lru_purge_enable = true;
+    cfg.max_open_sockets = MAX_CONNECTIONS_WEBSERVER;
 
     if (httpd_start(&httpd_handle, &cfg) != ESP_OK) {
         ESP_LOGE(TAG, "failed to start HTTP server");
