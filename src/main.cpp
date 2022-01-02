@@ -1,12 +1,10 @@
 #include <Arduino.h>
-#include <HomeSpan.h>
 #include <esp_log.h>
 #include <nvs_flash.h>
 
 #include "config.h"
-#include "config.hxx"
+#include "homespan.hxx"
 #include "rc.hxx"
-#include "server.hxx"
 
 #define TAG "main"
 
@@ -22,20 +20,7 @@ void setup() {
     }
 
     rc::start();
-
-    homeSpan.setHostNameSuffix("");
-    homeSpan.setWifiCallback(server::start);
-    homeSpan.setPortNum(8080);
-
-    Config config;
-    size_t serializedConfigSize;
-    char* serializedConfig = Config::load(serializedConfigSize);
-
-    homeSpan.begin(Category::Lighting, config.getName(), config.getHostname());
-
-    if (serializedConfig) {
-        free(serializedConfig);
-    }
+    homespan::start();
 }
 
-void loop() { homeSpan.poll(); }
+void loop() { vTaskDelete(nullptr); }

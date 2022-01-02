@@ -49,8 +49,6 @@ void _rcTask() {
         } else {
             swtch.send(command.code);
         }
-
-        ESP_LOGE("rcs", "sent %s %u %u %u", command.code, command.protocol, command.pulseLength, command.repeat);
     }
 }
 
@@ -64,10 +62,8 @@ void rcTask(void*) {
 void rc::start() {
     swtch.enableTransmit(GPIO_RC_TRANSMIT);
     rcCommandQueue = xQueueCreate(COMMAND_QUEUE_SIZE, sizeof(RCCommand));
-    xTaskCreate(rcTask, "rc-transmit", STACK_RC_TASK, nullptr, PRIORITY_RC_TASK, &rcTaskHandle);
+    xTaskCreatePinnedToCore(rcTask, "rc-transmit", STACK_RC_TASK, nullptr, PRIORITY_RC_TASK, &rcTaskHandle,
+                            CORE_RC_TASK);
 }
 
-void rc::send(RCCommand command) {
-    ESP_LOGE("rcs", "sending");
-    xQueueSend(rcCommandQueue, &command, portMAX_DELAY);
-}
+void rc::send(RCCommand command) { xQueueSend(rcCommandQueue, &command, portMAX_DELAY); }

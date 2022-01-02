@@ -57,6 +57,8 @@ const char* Config::getModel() const { return model; }
 
 const char* Config::getRevision() const { return revision; }
 
+const std::vector<Config::Switch>& Config::getSwitches() const { return switches; }
+
 String Config::serialize() {
     DynamicJsonDocument json(JSON_DOC_SIZE);
 

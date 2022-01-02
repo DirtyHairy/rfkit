@@ -46,6 +46,8 @@ class Config {
     const char* getModel() const;
     const char* getRevision() const;
 
+    const std::vector<Switch>& getSwitches() const;
+
     String serialize();
     bool deserializeFrom(JsonDocument& data);
 
