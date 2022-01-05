@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <HomeSpan.h>
 #include <esp_log.h>
 #include <nvs_flash.h>
 
@@ -8,7 +9,9 @@
 
 #define TAG "main"
 
-void setup() {
+extern "C" void app_main(void) {
+    initArduino();
+
     pinMode(GPIO_RC_TRANSMIT, OUTPUT);
     pinMode(GPIO_PROTECT, INPUT_PULLUP);
     digitalWrite(GPIO_RC_TRANSMIT, LOW);
@@ -22,5 +25,3 @@ void setup() {
     rc::start();
     homespan::start();
 }
-
-void loop() { vTaskDelete(nullptr); }

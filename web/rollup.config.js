@@ -50,6 +50,7 @@ export default {
         nodeResolve(),
         replace({
             'process.env.NODE_ENV': '"production"',
+            preventAssignment: true,
         }),
         commonjs(),
         buildHtml(),

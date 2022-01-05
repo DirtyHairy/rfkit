@@ -1,8 +1,8 @@
 #include "homespan.hxx"
 
 #include <HomeSpan.h>
+#include <freertos/FreeRTOS.h>
 
-#include "FreeRTOS.h"
 #include "config.h"
 #include "config.hxx"
 #include "freertos/task.h"
@@ -12,6 +12,7 @@
 namespace {
 
 Config config;
+
 TaskHandle_t homespanTaskHandle;
 
 void _homespanTask() {
@@ -51,7 +52,7 @@ void homespan::start() {
         config.deserializeFrom(serializedConfig, serializedConfigSize);
     }
 
-    homeSpan.setMaxConnections(DEFAULT_MAX_CONNECTIONS - MAX_CONNECTIONS_WEBSERVER);
+    homeSpan.setMaxConnections(MAX_CONNECTIONS_HOMESPAN);
     homeSpan.begin(Category::Bridges, config.getName(), config.getHostname());
 
     createAcessory(config.getName());

@@ -1,0 +1,12 @@
+[submodule "components/arduino"]
+	path = components/arduino
+	url = https://github.com/espressif/arduino-esp32.git
+[submodule "components/arduino_json/ArduinoJson"]
+	path = components/arduino_json/ArduinoJson
+	url = https://github.com/bblanchon/ArduinoJson.git
+[submodule "components/homespan/HomeSpan"]
+	path = components/homespan/HomeSpan
+	url = https://github.com/HomeSpan/HomeSpan.git
+[submodule "components/rc_switch/rc-switch"]
+	path = components/rc_switch/rc-switch
+	url = https://github.com/sui77/rc-switch.git

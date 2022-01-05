@@ -2,9 +2,9 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <FreeRTOS.h>
 #include <esp_http_server.h>
 #include <esp_log.h>
+#include <freertos/FreeRTOS.h>
 #include <freertos/timers.h>
 
 #include <cstring>

@@ -1,8 +1,8 @@
 #include "config.hxx"
 
 #include <ArduinoJson.h>
-#include <FreeRTOS.h>
 #include <esp_log.h>
+#include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 #include <nvs.h>
 

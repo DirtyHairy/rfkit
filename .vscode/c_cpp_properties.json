@@ -1,0 +1,26 @@
+{
+    "configurations": [
+      {
+        "name": "ESP-IDF",
+        "cStandard": "c11",
+        "cppStandard": "c++17",
+        "includePath": [
+          "${config:idf.espIdfPath}/components/**",
+          "${config:idf.espIdfPathWin}/components/**",
+          "${workspaceFolder}/**",
+          "${workspaceFolder}/components/rc_switch/rc-switch"
+        ],
+        "browse": {
+          "path": [
+            "${config:idf.espIdfPath}/components",
+            "${config:idf.espIdfPathWin}/components",
+            "${workspaceFolder}"
+          ],
+          "limitSymbolsToIncludedHeaders": false
+        },
+        "compilerPath": "${env:HOME}/.espressif/tools/xtensa-esp32-elf/esp-2021r2-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc",
+        "defines": ["ARDUINO=100"]
+      }
+    ],
+    "version": 4
+  }

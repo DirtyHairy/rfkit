@@ -1,7 +1,7 @@
 #ifndef _LOCK_H_
 #define _LOCK_H_
 
-#include <FreeRTOS.h>
+#include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 
 class Lock {
