@@ -121,6 +121,17 @@ bool Config::deserializeFrom(char* buffer, size_t size) {
         }
     }
 
+    for (auto s1 = serializedSwitches.begin(); s1 != serializedSwitches.end(); ++s1) {
+        auto s2 = s1;
+        ++s2;
+
+        for (; s2 != serializedSwitches.end(); ++s2) {
+            if (strcmp((*s1)["name"].as<const char*>(), (*s2)["name"].as<const char*>()) == 0) {
+                return false;
+            }
+        }
+    }
+
     name = json["name"].as<const char*>();
     hostname = json["hostname"].as<const char*>();
     manufacturer = json["manufacturer"].as<const char*>();

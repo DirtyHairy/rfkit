@@ -3,6 +3,7 @@ import { Config } from './state/config';
 const MSG_MANDATORY = 'This field is mandatory.';
 const MSG_BAD_HOSTNAME = 'Invalid hostname.';
 const MSG_BAD_CODE = 'Invalid code.';
+const MSG_DUPLICATE_NAME = 'Duplicate name.';
 
 export type Validator = (config: Config) => string | undefined;
 export type BoolValidator = (config: Config) => boolean;
@@ -35,7 +36,15 @@ export const switchName: (index: number) => Validator = (index) => (config) => {
         return undefined;
     }
 
-    return swtch.name.trim() === '' ? MSG_MANDATORY : undefined;
+    if (swtch.name.trim() === '') {
+        return MSG_MANDATORY;
+    }
+
+    if (config.switches.some((s, i) => i !== index && s.name === swtch.name)) {
+        return MSG_DUPLICATE_NAME;
+    }
+
+    return undefined;
 };
 
 export const switchOn: (index: number) => Validator = (index) => (config) => {
