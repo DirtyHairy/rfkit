@@ -7,7 +7,7 @@ The sockets are managed with a web interface.
 
 <img src="doc/device.jpeg" width="640" alt="finished device"></img>
 
-The hardware setup is based on a ESP32 / Wroom NodeMCU module. A 433MHz
+The hardware setup is based on a ESP32 NodeMCU module. A 433MHz
 transmitter is powered by the 5V output of the module and connected to GPIO26.
 
 A DIP switch connects GPIO27 to ground and acts as a write protect switch ---
