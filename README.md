@@ -74,7 +74,7 @@ The build is set up to automatically build the web frontend.
 
 Follow the [HomeSpan](https://github.com/HomeSpan/HomeSpan) documentation to
 configure wifi via the serial console. The initial hostname is `rfkit`. After
-connecting the device to your wifi open [http://rfkit.local] in your browser and
+connecting the device to your wifi open http://rfkit.local in your browser and
 change the configuration to your liking.
 
 Sockets are configured in the web interface. In order to determine the RF codes
