@@ -78,7 +78,7 @@ connecting the device to your wifi open http://rfkit.local in your browser and
 change the configuration to your liking.
 
 Sockets are configured in the web interface. In order to determine the RF codes
-that are used by a socket you'll have to use a separate 440MHz receiver
+that are used by a socket you'll have to use a separate 433MHz receiver
 connected to another MCU (or extend this project and open a pull request 😛).
 Check out the [rc-switch](https://github.com/sui77/rc-switch) documentation and
 examples for more information.
