@@ -8,4 +8,4 @@ node_modules
 yarn-error.log
 
 build
-sdconfig.old
+sdkconfig.old
