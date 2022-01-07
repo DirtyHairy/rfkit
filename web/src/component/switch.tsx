@@ -89,7 +89,7 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                     label='Code for "on"'
                     placeholder='enter code for "on"'
                     value={swtch.on}
-                    maxLength={64}
+                    maxLength={32}
                     invalid={validator.switchOn(index)(config)}
                     noFocus={!expanded}
                     onChange={(value) =>
@@ -101,7 +101,7 @@ export const Switch: FunctionComponent<Props> = ({ config, index, dispatch }) =>
                     label='Code for "off"'
                     placeholder='enter code for "off"'
                     value={swtch.off}
-                    maxLength={64}
+                    maxLength={32}
                     invalid={validator.switchOff(index)(config)}
                     noFocus={!expanded}
                     onChange={(value) =>

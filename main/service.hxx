@@ -4,6 +4,7 @@
 #include <HomeSpan.h>
 
 #include "config.hxx"
+#include "rc.hxx"
 
 struct SwitchService : Service::LightBulb {
    public:
@@ -12,9 +13,11 @@ struct SwitchService : Service::LightBulb {
 
     bool update() override;
 
+    void updateFromCommand(RCCommand& command);
+
    private:
     const Config::Switch swtch;
-    SpanCharacteristic *power;
+    SpanCharacteristic* power;
 };
 
 #endif  // _SERVICE_HXX_

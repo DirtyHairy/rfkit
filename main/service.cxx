@@ -1,5 +1,7 @@
 #include "service.hxx"
 
+#include <cstring>
+
 #include "rc.hxx"
 
 SwitchService::SwitchService(const Config::Switch swtch) : swtch(swtch) { power = new Characteristic::On(); }
@@ -18,4 +20,16 @@ bool SwitchService::update() {
     rc::send(command);
 
     return true;
+}
+
+void SwitchService::updateFromCommand(RCCommand& command) {
+    if (command.protocol != swtch.getProtocol()) {
+        return;
+    }
+
+    if (strcmp(command.code, swtch.getCodeOn()) == 0) {
+        power->setVal(true);
+    } else if (strcmp(command.code, swtch.getCodeOff()) == 0) {
+        power->setVal(false);
+    }
 }

@@ -13,6 +13,7 @@
 #include "config.hxx"
 #include "gpio.hxx"
 #include "guard.hxx"
+#include "homespan.hxx"
 #include "index_html.h"
 #include "rc.hxx"
 
@@ -181,6 +182,7 @@ esp_err_t handler_send(httpd_req_t* req) {
     command.pulseLength = json["pulseLength"].as<uint32_t>();
     command.repeat = json["repeat"].as<uint32_t>();
 
+    homespan::updateFromCommand(command);
     rc::send(command);
 
     httpd_resp_send(req, nullptr, 0);

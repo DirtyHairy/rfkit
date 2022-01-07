@@ -1,10 +1,5 @@
 http://localhost:8080 {
-    reverse_proxy /api/* http://rfkit {
-        header_up -User-Agent
-        header_up -sec-ch-ua
-        header_up -sec-ch-ua-mobile
-        header_up -sec-ch-ua-platform
-    }
+    reverse_proxy /api/* http://rfkit
 
     file_server {
         root web/dist
