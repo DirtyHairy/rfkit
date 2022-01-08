@@ -16,4 +16,5 @@ export interface Switch {
     pulseLength?: number;
     protocol?: number;
     repeat?: number;
+    id?: number;
 }

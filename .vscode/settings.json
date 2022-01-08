@@ -42,7 +42,9 @@
         "cinttypes": "cpp",
         "regex": "cpp",
         "utility": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "*.ipp": "cpp"
     },
-    "idf.adapterTargetName": "esp32"
+    "idf.adapterTargetName": "esp32",
+    "restructuredtext.languageServer.disabled": true
 }

@@ -15,10 +15,17 @@
 
 namespace {
 
+constexpr size_t JSON_DOC_SIZE = 2 * 1024;
+constexpr size_t MAX_SWITCHES = 32;
+
 const char* NVS_NAMESPACE = "rfkit";
-const char* NVS_KEY = "config";
+const char* NVS_KEY_CONFIG = "config";
+const char* NVS_KEY_NEXT_ID = "next_id";
 
 SemaphoreHandle_t nvsMutex{nullptr};
+
+config::Config currentConfig;
+bool configInitialized{false};
 
 bool isEmpty(const char* str) {
     if (!str) {
@@ -43,7 +50,20 @@ bool isEmpty(const char* str) {
     };
 }
 
+bool isValidId(uint32_t id) {
+    if (id == 0 || !configInitialized) return true;
+    if (id == 1) return false;
+
+    for (const auto& swtch : currentConfig.getSwitches()) {
+        if (swtch.getId() == id) return true;
+    }
+
+    return false;
+}
+
 }  // namespace
+
+namespace config {
 
 const char* Config::getName() const { return name; }
 
@@ -57,9 +77,9 @@ const char* Config::getModel() const { return model; }
 
 const char* Config::getRevision() const { return revision; }
 
-const std::vector<Config::Switch>& Config::getSwitches() const { return switches; }
+const std::vector<Switch>& Config::getSwitches() const { return switches; }
 
-String Config::serialize() {
+String Config::serialize() const {
     DynamicJsonDocument json(JSON_DOC_SIZE);
 
     json["name"] = (const char*)name;
@@ -88,6 +108,8 @@ String Config::serialize() {
         if (swtch.repeat > 0) {
             serializedSwitch["repeat"] = swtch.repeat;
         }
+
+        serializedSwitch["id"] = swtch.id;
     }
 
     String result;
@@ -106,28 +128,53 @@ bool Config::deserializeFrom(char* buffer, size_t size) {
     if (isEmpty(json["name"].as<const char*>()) || isEmpty(json["hostname"].as<const char*>()) ||
         isEmpty(json["manufacturer"].as<const char*>()) || isEmpty(json["serial"].as<const char*>()) ||
         isEmpty(json["model"].as<const char*>()) || isEmpty(json["revision"].as<const char*>())) {
+        ESP_LOGE(TAG, "invalid JSON: required field missing");
+
         return false;
     }
 
     JsonArray serializedSwitches = json["switches"].as<JsonArray>();
     if (serializedSwitches.isNull()) {
+        ESP_LOGE(TAG, "invalid JSON: switches is not an array");
+
+        return false;
+    }
+
+    if (serializedSwitches.size() > MAX_SWITCHES) {
+        ESP_LOGE(TAG, "invalid JSON: too many switches");
+
         return false;
     }
 
     for (const auto& serializedSwitch : serializedSwitches) {
         if (isEmpty(serializedSwitch["name"].as<const char*>()) || isEmpty(serializedSwitch["on"].as<const char*>()) ||
             isEmpty(serializedSwitch["off"].as<const char*>())) {
+            ESP_LOGE(TAG, "invalid JSON: switch is missing a required field");
             return false;
         }
     }
 
     for (auto s1 = serializedSwitches.begin(); s1 != serializedSwitches.end(); ++s1) {
+        uint32_t id1 = (*s1)["id"].as<uint32_t>();
+
+        if (!isValidId(id1)) {
+            ESP_LOGE(TAG, "invalid JSON: invalid switch ID %u", id1);
+
+            return false;
+        }
+
         auto s2 = s1;
         ++s2;
 
         for (; s2 != serializedSwitches.end(); ++s2) {
             if (strcmp((*s1)["name"].as<const char*>(), (*s2)["name"].as<const char*>()) == 0) {
+                ESP_LOGE(TAG, "invalid JSON: duplicate switch name %s", (*s1)["name"].as<const char*>());
+
                 return false;
+            }
+
+            if (id1 != 0 && id1 == (*s2)["id"].as<uint32_t>()) {
+                ESP_LOGE(TAG, "invalid JSON: duplicate switch ID %u", id1);
             }
         }
     }
@@ -151,6 +198,7 @@ bool Config::deserializeFrom(char* buffer, size_t size) {
         swtch.pulseLength = serializedSwitch["pulseLength"].as<uint32_t>();
         swtch.protocol = serializedSwitch["protocol"].as<uint32_t>();
         swtch.repeat = serializedSwitch["repeat"].as<uint32_t>();
+        swtch.id = serializedSwitch["id"].as<uint32_t>();
 
         switches[iSwitch++] = swtch;
     }
@@ -158,10 +206,58 @@ bool Config::deserializeFrom(char* buffer, size_t size) {
     return true;
 }
 
-char* Config::load(size_t& size) {
-    if (!nvsMutex) {
-        nvsMutex = xSemaphoreCreateMutex();
+bool Config::assignIds() {
+    Lock lock(nvsMutex);
+
+    nvs_handle handle;
+    if (nvs_open(NVS_NAMESPACE, NVS_READWRITE, &handle) != ESP_OK) {
+        ESP_LOGE(TAG, "failed to open NVS namespace");
+        return false;
     }
+
+    Guard closeNvsGuard([=] { nvs_close(handle); });
+
+    uint32_t nextId;
+    if (nvs_get_u32(handle, NVS_KEY_NEXT_ID, &nextId) != ESP_OK) {
+        nextId = 2;
+    }
+
+    const uint32_t nextIdInitial = nextId;
+
+    for (auto& swtch : switches) {
+        const uint32_t id = swtch.getId();
+
+        if (id == 0 || id >= nextId) swtch.setId(nextId++);
+    }
+
+    if (nextId != nextIdInitial) {
+        if (nvs_set_u32(handle, NVS_KEY_NEXT_ID, nextId) != ESP_OK || nvs_commit(handle) != ESP_OK) {
+            ESP_LOGE(TAG, "failed to write next ID to NVS");
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+const char* Switch::getName() const { return name; }
+
+const char* Switch::getCodeOn() const { return codeOn; }
+
+const char* Switch::getCodeOff() const { return codeOff; }
+
+uint32_t Switch::getProtocol() const { return protocol; }
+
+uint32_t Switch::getPulseLength() const { return pulseLength; }
+
+uint32_t Switch::getRepeat() const { return repeat; }
+
+uint32_t Switch::getId() const { return id; }
+
+void Switch::setId(uint32_t id) { this->id = id; }
+
+char* load(size_t& size) {
     Lock lock(nvsMutex);
 
     nvs_handle handle;
@@ -172,7 +268,7 @@ char* Config::load(size_t& size) {
 
     Guard closeNvsGuard([=] { nvs_close(handle); });
 
-    if (nvs_get_blob(handle, NVS_KEY, nullptr, &size) != ESP_OK) {
+    if (nvs_get_blob(handle, NVS_KEY_CONFIG, nullptr, &size) != ESP_OK) {
         return nullptr;
     }
 
@@ -182,7 +278,7 @@ char* Config::load(size_t& size) {
         return nullptr;
     }
 
-    if (nvs_get_blob(handle, NVS_KEY, buffer, &size) != ESP_OK) {
+    if (nvs_get_blob(handle, NVS_KEY_CONFIG, buffer, &size) != ESP_OK) {
         free(buffer);
         return nullptr;
     }
@@ -190,10 +286,8 @@ char* Config::load(size_t& size) {
     return (char*)buffer;
 }
 
-void Config::save(const char* serializedData, size_t size) {
-    if (!nvsMutex) {
-        nvsMutex = xSemaphoreCreateMutex();
-    }
+void save(const Config& config) {
+    String serializedConfig = config.serialize();
 
     Lock lock(nvsMutex);
 
@@ -205,20 +299,30 @@ void Config::save(const char* serializedData, size_t size) {
 
     Guard closeNvsGuard([=] { nvs_close(handle); });
 
-    if (nvs_set_blob(handle, NVS_KEY, serializedData, size) != ESP_OK || nvs_commit(handle) != ESP_OK) {
+    if (nvs_set_blob(handle, NVS_KEY_CONFIG, serializedConfig.c_str(), serializedConfig.length()) != ESP_OK ||
+        nvs_commit(handle) != ESP_OK) {
         ESP_LOGE(TAG, "failed to write config");
         return;
     }
 }
 
-const char* Config::Switch::getName() const { return name; }
+void init() {
+    nvsMutex = xSemaphoreCreateMutex();
 
-const char* Config::Switch::getCodeOn() const { return codeOn; }
+    size_t serializedConfigSize;
+    char* serializedConfig = load(serializedConfigSize);
 
-const char* Config::Switch::getCodeOff() const { return codeOff; }
+    if (serializedConfig) {
+        ::currentConfig.deserializeFrom(serializedConfig, serializedConfigSize);
+    }
 
-uint32_t Config::Switch::getProtocol() const { return protocol; }
+    if (::currentConfig.assignIds()) {
+        save(::currentConfig);
+    }
 
-uint32_t Config::Switch::getPulseLength() const { return pulseLength; }
+    configInitialized = true;
+}
 
-uint32_t Config::Switch::getRepeat() const { return repeat; }
+const Config& currentConfig() { return ::currentConfig; }
+
+}  // namespace config

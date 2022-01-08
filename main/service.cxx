@@ -4,7 +4,7 @@
 
 #include "rc.hxx"
 
-SwitchService::SwitchService(const Config::Switch swtch) : swtch(swtch) { power = new Characteristic::On(); }
+SwitchService::SwitchService(const config::Switch swtch) : swtch(swtch) { power = new Characteristic::On(); }
 
 SwitchService::~SwitchService() { delete power; }
 

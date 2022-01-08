@@ -8,7 +8,7 @@
 
 struct SwitchService : Service::LightBulb {
    public:
-    SwitchService(const Config::Switch swtch);
+    SwitchService(const config::Switch swtch);
     virtual ~SwitchService();
 
     bool update() override;
@@ -16,7 +16,7 @@ struct SwitchService : Service::LightBulb {
     void updateFromCommand(RCCommand& command);
 
    private:
-    const Config::Switch swtch;
+    const config::Switch swtch;
     SpanCharacteristic* power;
 };
 

@@ -4,6 +4,7 @@
 #include <nvs_flash.h>
 
 #include "config.h"
+#include "config.hxx"
 #include "homespan.hxx"
 #include "rc.hxx"
 
@@ -18,13 +19,14 @@ extern "C" void app_main(void) {
 
     Serial.begin(115200);
 
-    ESP_LOGI(TAG, "rkit starting");
+    ESP_LOGI(TAG, "rfkit starting");
     ESP_LOGI(TAG, "running at %u MHz", getCpuFrequencyMhz());
 
     if (nvs_flash_init() != ESP_OK) {
         ESP_LOGE(TAG, "failed to init NVS");
     }
 
+    config::init();
     rc::start();
     homespan::start();
 }

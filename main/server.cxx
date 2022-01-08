@@ -76,7 +76,7 @@ esp_err_t handler_status(httpd_req_t* req) {
 
 esp_err_t handler_config_get(httpd_req_t* req) {
     size_t len;
-    char* buffer = Config::load(len);
+    char* buffer = config::load(len);
 
     httpd_resp_set_hdr(req, "Content-Type", "application/json");
 
@@ -84,7 +84,7 @@ esp_err_t handler_config_get(httpd_req_t* req) {
         httpd_resp_send(req, buffer, len);
         free(buffer);
     } else {
-        Config defaultConfig;
+        config::Config defaultConfig;
         String serializedConfig = defaultConfig.serialize();
 
         httpd_resp_send(req, serializedConfig.c_str(), serializedConfig.length());
@@ -123,14 +123,13 @@ esp_err_t handler_config_post(httpd_req_t* req) {
         return ESP_FAIL;
     }
 
-    Config config;
+    config::Config config;
 
     if (!config.deserializeFrom(buffer, recv_result)) {
         return send_400(req);
     }
 
-    String serializedConfig = config.serialize();
-    Config::save(serializedConfig.c_str(), serializedConfig.length());
+    config::save(config);
 
     httpd_resp_send(req, nullptr, 0);
 

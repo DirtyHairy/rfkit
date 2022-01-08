@@ -16,8 +16,6 @@ namespace {
 
 constexpr size_t OOB_COMMAND_QUEUE_SIZE = 5;
 
-Config config;
-
 TaskHandle_t homespanTaskHandle;
 QueueHandle_t oobCommandQueue;
 
@@ -41,8 +39,8 @@ void homespanTask(void*) {
     vTaskDelete(nullptr);
 }
 
-void createAcessory(const char* name) {
-    new SpanAccessory();
+void createAcessory(const char* name, uint32_t aid, const config::Config& config) {
+    new SpanAccessory(aid);
     new Service::AccessoryInformation();
     new Characteristic::Name(name);
     new Characteristic::Manufacturer(config.getManufacturer());
@@ -61,21 +59,17 @@ void homespan::start() {
     homeSpan.setWifiCallback(server::start);
     homeSpan.setPortNum(8080);
 
-    size_t serializedConfigSize;
-    char* serializedConfig = Config::load(serializedConfigSize);
-    if (serializedConfig) {
-        config.deserializeFrom(serializedConfig, serializedConfigSize);
-    }
+    const config::Config& config = config::currentConfig();
 
     homeSpan.setMaxConnections(MAX_CONNECTIONS_HOMESPAN);
     homeSpan.begin(Category::Bridges, config.getName(), config.getHostname());
 
-    createAcessory(config.getName());
+    createAcessory(config.getName(), 1, config);
 
     serviceInstances.reserve(config.getSwitches().size());
 
-    for (const Config::Switch& swtch : config.getSwitches()) {
-        createAcessory(swtch.getName());
+    for (const config::Switch& swtch : config.getSwitches()) {
+        createAcessory(swtch.getName(), swtch.getId(), config);
         serviceInstances.push_back(new SwitchService(swtch));
     }
 

@@ -12,6 +12,8 @@ import { Status } from '../state/state';
 import { StatusDisplay } from './status-display';
 import { Switch } from './switch';
 
+const MAX_SWITCHES = 32;
+
 export interface Props {
     config: Config;
     status?: Status;
@@ -52,6 +54,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
                 placeholder="enter manufacturer"
                 label="Manufacturer:"
                 onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { manufacturer: value } })}
+                invalid={validator.manufacturer(config)}
             />
 
             <Input
@@ -60,6 +63,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
                 placeholder="enter serial"
                 label="Serial:"
                 onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { serial: value } })}
+                invalid={validator.serial(config)}
             />
 
             <Input
@@ -68,6 +72,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
                 placeholder="enter model"
                 label="Model:"
                 onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { model: value } })}
+                invalid={validator.model(config)}
             />
 
             <Input
@@ -76,6 +81,7 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
                 placeholder="enter revision"
                 label="Revision:"
                 onChange={(value) => dispatch({ type: ActionType.updateConfig, changes: { revision: value } })}
+                invalid={validator.revision(config)}
             />
 
             <h2 className="headline-switches">Switches</h2>
@@ -85,7 +91,12 @@ export const Editor: FunctionComponent<Props> = ({ config, dispatch, status, isD
             ))}
 
             <div className="editor-buttons">
-                <button onClick={() => dispatch({ type: ActionType.addSwitch })}>Add switch</button>
+                <button
+                    onClick={() => dispatch({ type: ActionType.addSwitch })}
+                    disabled={config.switches.length >= MAX_SWITCHES}
+                >
+                    Add switch
+                </button>
                 <button
                     className={`btn-save ${status?.protect ? 'hidden' : ''}`}
                     disabled={!isDirty || !validator.config(config)}
