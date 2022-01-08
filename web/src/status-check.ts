@@ -1,5 +1,6 @@
 import { ActionType } from './state/action';
 import { MutableRefObject } from 'react';
+import { Mutex } from 'async-mutex';
 import { StateApi } from './state/state-api';
 
 export class StatusCheck {
@@ -20,8 +21,7 @@ export class StatusCheck {
             return;
         }
 
-        await this.currentRequest;
-        clearTimeout(this.handle);
+        this.mutex.runExclusive(() => clearTimeout(this.handle));
 
         this.running = false;
     }
@@ -48,22 +48,22 @@ export class StatusCheck {
         }
     };
 
-    private worker = async (): Promise<void> => {
-        this.currentRequest = this.updateStatus();
-        await this.currentRequest;
+    private worker = () =>
+        this.mutex.runExclusive(async (): Promise<void> => {
+            await this.updateStatus();
 
-        const timestamp = performance.now() - this.timestampAtStart;
+            const timestamp = performance.now() - this.timestampAtStart;
 
-        let delay = (Math.floor(timestamp / 3000) + 1) * 3000 - timestamp;
-        if (delay < 500) {
-            delay += 3000;
-        }
+            let delay = (Math.floor(timestamp / 3000) + 1) * 3000 - timestamp;
+            if (delay < 500) {
+                delay += 3000;
+            }
 
-        this.handle = window.setTimeout(this.worker, delay);
-    };
+            this.handle = window.setTimeout(this.worker, delay);
+        });
 
     private handle: number | undefined;
     private running = false;
-    private currentRequest: Promise<void> = Promise.resolve();
     private timestampAtStart = 0;
+    private mutex = new Mutex();
 }
