@@ -16,7 +16,6 @@
 namespace {
 
 constexpr size_t JSON_DOC_SIZE = 2 * 1024;
-constexpr size_t MAX_SWITCHES = 32;
 
 const char* NVS_NAMESPACE = "rfkit";
 const char* NVS_KEY_CONFIG = "config";

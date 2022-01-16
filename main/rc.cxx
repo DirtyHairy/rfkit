@@ -9,10 +9,9 @@
 #include <algorithm>
 
 #include "config.h"
+#include "config.hxx"
 
 namespace {
-
-constexpr size_t COMMAND_QUEUE_SIZE = 10;
 
 TaskHandle_t rcTaskHandle;
 QueueHandle_t rcCommandQueue;
@@ -61,7 +60,7 @@ void rcTask(void*) {
 
 void rc::start() {
     swtch.enableTransmit(GPIO_RC_TRANSMIT);
-    rcCommandQueue = xQueueCreate(COMMAND_QUEUE_SIZE, sizeof(RCCommand));
+    rcCommandQueue = xQueueCreate(config::MAX_SWITCHES, sizeof(RCCommand));
     xTaskCreatePinnedToCore(rcTask, "rc-transmit", STACK_RC_TASK, nullptr, PRIORITY_RC_TASK, &rcTaskHandle,
                             CORE_RC_TASK);
 }
