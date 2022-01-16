@@ -2,22 +2,27 @@
 
 #include <cstring>
 
+#include "persistence.hxx"
 #include "rc.hxx"
 
-SwitchService::SwitchService(const config::Switch swtch) : swtch(swtch) { power = new Characteristic::On(); }
+SwitchService::SwitchService(const config::Switch& swtch, size_t index, boolean state) : swtch(swtch), index(index) {
+    power = new Characteristic::On(state);
+}
 
 SwitchService::~SwitchService() { delete power; }
 
 bool SwitchService::update() {
     RCCommand command;
+    boolean value = power->getNewVal<bool>();
 
-    strncpy(command.code, power->getNewVal<bool>() ? swtch.getCodeOn() : swtch.getCodeOff(), 32);
+    strncpy(command.code, value ? swtch.getCodeOn() : swtch.getCodeOff(), 32);
     command.code[32] = '\0';
     command.protocol = swtch.getProtocol();
     command.pulseLength = swtch.getPulseLength();
     command.repeat = swtch.getRepeat();
 
     rc::send(command);
+    persistence::setState(index, swtch.getId(), value);
 
     return true;
 }
@@ -33,3 +38,5 @@ void SwitchService::updateFromCommand(RCCommand& command) {
         power->setVal(false);
     }
 }
+
+bool SwitchService::getValue() { return power->getVal<boolean>(); }

@@ -8,6 +8,8 @@
 
 namespace config {
 
+constexpr size_t MAX_SWITCHES = 32;
+
 class Config;
 
 struct Switch {

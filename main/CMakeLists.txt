@@ -7,6 +7,8 @@ set(srcs
     rc.cxx
     server.cxx
     service.cxx
+    persistence.cxx
+    crc32.cxx
 )
 
 idf_component_register(SRCS ${srcs}

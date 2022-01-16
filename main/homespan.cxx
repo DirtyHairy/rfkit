@@ -9,6 +9,7 @@
 #include "config.hxx"
 #include "freertos/queue.h"
 #include "freertos/task.h"
+#include "persistence.hxx"
 #include "server.hxx"
 #include "service.hxx"
 
@@ -52,6 +53,20 @@ void createAcessory(const char* name, uint32_t aid, const config::Config& config
     new Characteristic::Version("1.1.0");
 }
 
+bool initialValue(uint32_t id) {
+    static bool persistenceValid = persistence::isValid();
+    if (!persistenceValid) return false;
+
+    size_t numPersistentSwitches = persistence::switchCount();
+    for (size_t i = 0; i < numPersistentSwitches; i++) {
+        persistence::SwitchState state = persistence::getState(i);
+
+        if (state.id == id) return state.state;
+    }
+
+    return false;
+}
+
 }  // namespace
 
 void homespan::start() {
@@ -68,9 +83,22 @@ void homespan::start() {
 
     serviceInstances.reserve(config.getSwitches().size());
 
+    size_t idx = 0;
     for (const config::Switch& swtch : config.getSwitches()) {
         createAcessory(swtch.getName(), swtch.getId(), config);
-        serviceInstances.push_back(new SwitchService(swtch));
+
+        serviceInstances.push_back(new SwitchService(swtch, idx++, initialValue(swtch.getId())));
+    }
+
+    persistence::reset(config.getSwitches().size());
+
+    idx = 0;
+    for (const config::Switch& swtch : config.getSwitches()) {
+        persistence::setState(idx, swtch.getId(), serviceInstances[idx]->getValue());
+
+        ESP_LOGI("rfkit", "switch %u has initial state %u", idx, (uint32_t)serviceInstances[idx]->getValue());
+
+        idx++;
     }
 
     oobCommandQueue = xQueueCreate(OOB_COMMAND_QUEUE_SIZE, sizeof(RCCommand));
