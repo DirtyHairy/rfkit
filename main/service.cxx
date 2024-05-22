@@ -9,7 +9,7 @@ SwitchService::SwitchService(const config::Switch swtch) : swtch(swtch) {
     update();
 }
 
-SwitchService::~SwitchService() { delete power; }
+SwitchService::~SwitchService() {}
 
 bool SwitchService::update() {
     RCCommand command;

@@ -9,11 +9,13 @@
 struct SwitchService : Service::LightBulb {
    public:
     SwitchService(const config::Switch swtch);
-    virtual ~SwitchService();
 
     bool update() override;
 
     void updateFromCommand(RCCommand& command);
+
+   protected:
+    virtual ~SwitchService();
 
    private:
     const config::Switch swtch;

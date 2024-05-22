@@ -39,7 +39,7 @@ build is concatenated to a single HTML that is served by the ESP.
 
 The firmware currently builds with
 [ESP-IDF](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/index.html)
-v4.4-beta1. In addition, you need [NodeJS](https://nodejs.org/en/) and
+v4.4.7 In addition, you need [NodeJS](https://nodejs.org/en/) and
 [yarn](https://yarnpkg.com) in order to build the web interface.
 
 ### 2. Submodules
